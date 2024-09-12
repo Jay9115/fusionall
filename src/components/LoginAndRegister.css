@@ -1,0 +1,92 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f4f8;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Container */
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  /* Form Container */
+  .form-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  /* Heading */
+  .form-container h2 {
+    margin-bottom: 20px;
+    color: #0056b3;
+  }
+  
+  /* Form Group */
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+  
+  /* Buttons */
+  .btn-primary {
+    width: 100%;
+    padding: 10px;
+    background-color: #0056b3;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .btn-primary:hover {
+    background-color: #004494;
+  }
+  
+  .btn-secondary {
+    width: 100%;
+    padding: 10px;
+    background-color: #e7f3ff;
+    color: #0056b3;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #d1e7ff;
+  }
+  
+  /* Responsive */
+  @media (max-width: 600px) {
+    .form-container {
+      padding: 15px;
+    }
+  
+    .form-container h2 {
+      font-size: 1.5rem;
+    }
+  }
+  

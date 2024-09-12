@@ -1,0 +1,28 @@
+{
+	"folders": [
+		{
+			"name": "JAVA",
+			"path": "../JAVA"
+		},
+		{
+			"name": "JAY",
+			"path": ".."
+		},
+		{
+			"name": "sss",
+			"path": "../../sss"
+		},
+		{
+			"name": "Nodee",
+			"path": "../../Nodee"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "JAY",
+		"files.associations": {
+			"iostream": "cpp",
+			"new": "cpp",
+			"ostream": "cpp"
+		}
+	}
+}
