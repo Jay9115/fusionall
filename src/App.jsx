@@ -3,6 +3,7 @@ import "./App.css";
 import LoginAndRegister from "./components/LoginAndRegister";
 import HorizontalNav from "./components/Horizontalnav";
 import VerticalNav from "./components/VerticalNav";
+import Chat from "./components/chat";  // Ensure the Chat component is properly named
 
 function App() {
     const [activeSection, setActiveSection] = useState("Home");
@@ -15,23 +16,10 @@ function App() {
         <div className="App">
             <HorizontalNav />
             <VerticalNav onNavClick={handleNavClick} />
-    
+
             <div className="content">
-                {activeSection === "Login" ? (
-                    <LoginAndRegister />
-                ) : (
-                    ["Home", "Chat", "Groups", "Blogs", "Calendar", "Materials", "Profile", "Setting", "About", "Contact"].map((section) => (
-                        <div
-                            key={section}
-                            id={section}
-                            className={`page-section ${activeSection === section ? "active" : ""}`}
-                            style={{ display: activeSection === section ? "block" : "none" }}
-                        >
-                            <h2>{section} Page</h2>
-                            <p>Welcome to the {section} page of Fusion All.</p>
-                        </div>
-                    ))
-                )}
+                {activeSection === "Login" && <LoginAndRegister />}
+                {activeSection === "Chat" && <Chat />}
             </div>
         </div>
     );
