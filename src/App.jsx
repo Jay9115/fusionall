@@ -4,6 +4,7 @@ import LoginAndRegister from "./components/LoginAndRegister";
 import HorizontalNav from "./components/Horizontalnav";
 import VerticalNav from "./components/VerticalNav";
 import Chat from "./components/chat";  // Ensure the Chat component is properly named
+import AuthButtons from "./components/AuthButtons";
 
 function App() {
     const [activeSection, setActiveSection] = useState("Home");
@@ -18,7 +19,7 @@ function App() {
             <VerticalNav onNavClick={handleNavClick} />
 
             <div className="content">
-                {activeSection === "Login" && <LoginAndRegister />}
+                {activeSection === "Login" && <AuthButtons />}
                 {activeSection === "Chat" && <Chat />}
             </div>
         </div>

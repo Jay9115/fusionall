@@ -1,63 +1,23 @@
 import React, { useRef, useState } from 'react';
 import './chat.css';
-
-import { limit } from 'firebase/firestore'; // Add this import
-import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc, orderBy, query, serverTimestamp } from 'firebase/firestore';
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
+import { limit } from 'firebase/firestore';
+import { collection, addDoc, orderBy, query, serverTimestamp } from 'firebase/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
-
-// Firebase config
-const firebaseConfig = {
-    apiKey: "AIzaSyB74vfpig6_klue_2fXCk_lCeG4ftn-XFc",
-    authDomain: "fusionall360.firebaseapp.com",
-    projectId: "fusionall360",
-    storageBucket: "fusionall360.appspot.com",
-    messagingSenderId: "17521252253",
-    appId: "1:17521252253:web:c2f2f42eedace970dc4174",
-    measurementId: "G-T7E810GBD7"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const firestore = getFirestore(app);
+import { auth, firestore } from './firebase';  // Import from the new file
+import AuthButtons from "./AuthButtons";
 
 function Chat() {
     const [user] = useAuthState(auth);
 
     return (
         <div className="App">
-            <header>
-                <h1>⚛️🔥💬</h1>
-                <SignOut />
-            </header>
+            
 
             <section>
-                {user ? <ChatRoom /> : <SignIn />}
+                {user ? <ChatRoom /> : <AuthButtons />}
             </section>
         </div>
-    );
-}
-
-function SignIn() {
-    const signInWithGoogle = () => {
-        const provider = new GoogleAuthProvider();
-        signInWithPopup(auth, provider);
-    };
-
-    return (
-        <>
-            <button className="sign-in" onClick={signInWithGoogle}>Sign in with Google</button>
-            <p>Do not violate the community guidelines or you will be banned for life!</p>
-        </>
-    );
-}
-
-function SignOut() {
-    return auth.currentUser && (
-        <button className="sign-out" onClick={() => signOut(auth)}>Sign Out</button>
     );
 }
 
