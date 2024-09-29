@@ -64,6 +64,10 @@ body {
     display: flex;
     font-size: 1.5rem;
   }
+  .friends-list
+  {
+    color: #181717;
+  }
   
   form button {
     width: 20%;
