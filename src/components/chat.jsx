@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import './chat.css';
-import { collection, addDoc, orderBy, query, getDocs, serverTimestamp, doc, getDoc } from 'firebase/firestore';
+import { collection, addDoc, orderBy, query, onSnapshot, serverTimestamp, doc, getDoc } from 'firebase/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, firestore } from './firebase';
 import AuthButtons from "./AuthButtons";
@@ -96,20 +96,21 @@ function PrivateChat({ friend }) {
 
     // Fetch chat messages between the current user and the selected friend
     useEffect(() => {
-        const fetchMessages = async () => {
-            const messagesRef = collection(firestore, 'chats', chatId, 'messages');
-            const q = query(messagesRef, orderBy('timestamp'));
+        const messagesRef = collection(firestore, 'chats', chatId, 'messages');
+        const q = query(messagesRef, orderBy('timestamp'));
 
-            const querySnapshot = await getDocs(q); // Get all the chat messages for this chatId
+        // Real-time listener for chat messages
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const messagesData = [];
             querySnapshot.forEach((doc) => {
                 messagesData.push(doc.data());
             });
-
             setMessages(messagesData); // Set the fetched messages to state
-        };
+            dummy.current.scrollIntoView({ behavior: 'smooth' }); // Scroll to the bottom when new messages are received
+        });
 
-        fetchMessages();
+        // Clean up the listener when the component is unmounted
+        return () => unsubscribe();
     }, [chatId]);
 
     const sendMessage = async (e) => {

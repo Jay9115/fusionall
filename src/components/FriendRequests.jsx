@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { collection, doc, updateDoc, arrayUnion, arrayRemove, getDoc } from 'firebase/firestore';
+import { doc, updateDoc, arrayUnion, arrayRemove, getDoc } from 'firebase/firestore';
 import { firestore, auth } from './firebase';
 
 function FriendRequests() {
@@ -10,12 +10,24 @@ function FriendRequests() {
         const fetchRequests = async () => {
             if (currentUser) {
                 const userDocRef = doc(firestore, 'users', currentUser.uid);
-                const userSnapshot = await getDoc(userDocRef); // Use getDoc instead of getDocs
+                const userSnapshot = await getDoc(userDocRef);
 
                 if (userSnapshot.exists()) {
                     const userData = userSnapshot.data();
                     if (userData && userData.friendRequestsReceived) {
-                        setRequests(userData.friendRequestsReceived);
+                        // Fetch usernames for each UID
+                        const friendRequestsWithNames = await Promise.all(
+                            userData.friendRequestsReceived.map(async (friendUid) => {
+                                const friendDocRef = doc(firestore, 'users', friendUid);
+                                const friendSnapshot = await getDoc(friendDocRef);
+                                if (friendSnapshot.exists()) {
+                                    const friendData = friendSnapshot.data();
+                                    return { uid: friendUid, username: friendData.username }; // Assuming 'username' is a field in the 'users' collection
+                                }
+                                return { uid: friendUid, username: 'Unknown' };
+                            })
+                        );
+                        setRequests(friendRequestsWithNames);
                     }
                 } else {
                     console.log('No such document!');
@@ -43,17 +55,17 @@ function FriendRequests() {
         });
 
         // Optionally, remove the request from the state
-        setRequests((prevRequests) => prevRequests.filter((uid) => uid !== friendUid));
+        setRequests((prevRequests) => prevRequests.filter((request) => request.uid !== friendUid));
     };
 
     return (
         <div>
             <h3>Friend Requests</h3>
             {requests.length > 0 ? (
-                requests.map((friendUid) => (
-                    <div key={friendUid} className="friend-request">
-                        <span>{friendUid}</span> {/* Replace with actual username if needed */}
-                        <button onClick={() => acceptRequest(friendUid)}>Accept</button>
+                requests.map((request) => (
+                    <div key={request.uid} className="friend-request">
+                        <span>{request.username}</span> {/* Display username instead of UID */}
+                        <button onClick={() => acceptRequest(request.uid)}>Accept</button>
                     </div>
                 ))
             ) : (
