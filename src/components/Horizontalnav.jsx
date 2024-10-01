@@ -56,10 +56,12 @@ const HorizontalNav = () => {
         <nav className="horizontal-nav" id="horizontal-nav">
             {/* Left side: Show Friend Requests */}
             <div className="show-requests-container">
-                <button onClick={() => setShowRequests((prev) => !prev)}>
+                {/* <button onClick={() => setShowRequests((prev) => !prev)}>
                     {showRequests ? 'Hide Requests' : 'Show Friend Requests'}
                 </button>
-                {showRequests && <FriendRequests />} {/* Show friend requests dropdown */}
+
+                {showRequests && <FriendRequests />} Show friend requests dropdown */}
+                <FriendRequests />
             </div>
 
             {/* Middle: Search Bar */}

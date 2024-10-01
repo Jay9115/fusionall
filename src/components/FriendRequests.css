@@ -1,0 +1,62 @@
+/* Container for the Friend Requests dropdown */
+.friend-requests-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown content (hidden by default) */
+.friend-requests-content {
+    display: none; /* Hidden by default */
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 200px;
+    color: #000;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    z-index: 1;
+    border-radius: 5px;
+}
+
+/* Show the dropdown when hovered or clicked */
+.friend-requests-dropdown:hover .friend-requests-content,
+.friend-requests-dropdown.active .friend-requests-content {
+    display: block; 
+}
+
+/* Friend request item styling */
+.friend-request {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+    background-color: #fff;
+    transition: background-color 0.3s;
+}
+
+.friend-request:hover {
+    background-color: #f1f1f1;
+}
+
+/* Button styling */
+.friend-request button {
+    background-color: #4caf50;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.friend-request button:hover {
+    background-color: #45a049;
+}
+
+/* No requests message */
+.no-requests {
+    text-align: center;
+    padding: 10px;
+    font-style: italic;
+    color: #6a6666;
+}

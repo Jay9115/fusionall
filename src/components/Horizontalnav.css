@@ -33,7 +33,7 @@
 }
 
 .show-requests-container button:hover {
-    background-color: #e3f2fd;
+    background-color: #074571;
 }
 
 /* Center: Search Bar */
@@ -54,15 +54,11 @@
     transition: width 0.3s ease-in-out;
 }
 
-.search-container input:focus {
-    width: 350px;
-}
-
 .search-results {
     position: absolute;
     top: 45px; /* Adjust to be right under the input box */
     width: 100%;
-    background-color: white;
+    background-color: rgb(255, 255, 255);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     z-index: 99;
