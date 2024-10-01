@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import "./App.css";
-import LoginAndRegister from "./components/LoginAndRegister";
+
 import HorizontalNav from "./components/Horizontalnav";
 import VerticalNav from "./components/VerticalNav";
 import Chat from "./components/chat";  // Ensure the Chat component is properly named
 import AuthButtons from "./components/AuthButtons";
+import Group from "./components/group";
 
 function App() {
     const [activeSection, setActiveSection] = useState("Home");
@@ -21,6 +22,7 @@ function App() {
             <div className="content">
                 {activeSection === "Login" && <AuthButtons />}
                 {activeSection === "Chat" && <Chat />}
+                {activeSection === "Groups" && <Group />}
             </div>
         </div>
     );
