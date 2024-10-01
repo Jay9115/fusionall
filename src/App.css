@@ -1,66 +1,3 @@
-/* Horizontal Navigation Bar */
-.horizontal-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: linear-gradient(135deg, #206ab6, #1a4f85, #206ab6);
-    color: #ffffff;
-    padding: 10px 20px;
-    width: 100%;
-    height: 60px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 2;
-    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.3);
-    border-bottom: 1px solid #ddd;
-}
-
-.horizontal-nav .logo img {
-    max-width: 60px;
-    height: auto;
-    margin-bottom: -7px;
-}
-
-.horizontal-nav .brand-name h3 {
-    color: #ffffff;
-    font-size: 1.5em;
-    font-weight: 600;
-    margin-left: -395px;
-}
-
-.horizontal-nav .search-container {
-    display: flex;
-    align-items: center;
-    border-radius: 25px;
-    background-color: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.horizontal-nav #search {
-    padding: 8px 12px;
-    margin-right: 5px;
-    border: none;
-    outline: none;
-    border-radius: 25px;
-    width: 200px;
-    box-sizing: border-box;
-    transition: width 0.3s ease-in-out;
-    background-color: rgba(255, 255, 255, 0.9);
-}
-
-.horizontal-nav #search:focus {
-    width: 300px;
-}
-
-.horizontal-nav .profile-btn img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 2px solid #ffffff;
-}
-
 /* Vertical Navigation Bar */
 .vertical-nav {
     position: fixed;
@@ -78,11 +15,6 @@
 .vertical-nav .nav-list {
     list-style: none;
     padding: 0;
-    margin: 0;
-}
-
-.vertical-nav .nav-list li {
-    margin-bottom: 10px;
 }
 
 .vertical-nav .nav-list li a {
@@ -123,11 +55,6 @@
 .right-nav .nav-list {
     list-style: none;
     padding: 0;
-    margin: 0;
-}
-
-.right-nav .nav-list li {
-    margin-bottom: 10px;
 }
 
 .right-nav .nav-list li a {
