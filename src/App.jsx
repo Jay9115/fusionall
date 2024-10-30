@@ -6,7 +6,7 @@ import VerticalNav from "./components/VerticalNav";
 import Chat from "./components/chat";  // Ensure the Chat component is properly named
 import AuthButtons from "./components/AuthButtons";
 import Group from "./components/group";
-
+import Materials from "./components/Materials";
 function App() {
     const [activeSection, setActiveSection] = useState("Home");
 
@@ -23,6 +23,7 @@ function App() {
                 {activeSection === "Login" && <AuthButtons />}
                 {activeSection === "Chat" && <Chat />}
                 {activeSection === "Groups" && <Group />}
+                {activeSection === "Materials" && <Materials />}
             </div>
         </div>
     );
