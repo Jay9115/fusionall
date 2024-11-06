@@ -81,13 +81,12 @@ function FriendItem({ friendUid, setSelectedFriend }) {
     return (
         <div className="friend-item" onClick={() => setSelectedFriend(friendData)}>
             {/* Display avatar photo */}
-            <img src={ 'https://api.adorable.io/avatars/23/abott@adorable.png'} alt="Avatar" />
-            {/* <img
+            <img
 
-                src={friendData?.photoURL || 'https://via.placeholder.com/50'} // Use a placeholder if photoURL is not available
+                src={friendData?.photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'} // Use a placeholder if photoURL is not available
                 alt={`${friendData?.username}'s avatar`}
                 className="friend-avatar"
-            /> */}
+            />
             <p>{friendData?.username || 'Loading...'}</p>
         </div>
     );
