@@ -154,7 +154,10 @@ img {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   color: white;
 }
-
+.friend-item.selected {
+  background-color: black;
+  color: white;
+}
 .friends-list h3 {
   font-size: 1.8rem;
   margin-bottom: 20px;

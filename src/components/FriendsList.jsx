@@ -30,6 +30,7 @@ function FriendsList({ selectedFriends, setSelectedFriends }) {
         } else {
             setSelectedFriends([...selectedFriends, friendUid]);
         }
+        
     };
 
     return (
