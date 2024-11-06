@@ -64,6 +64,7 @@ function FriendsList({ setSelectedFriend }) {
 }
 
 // Component to display each friend's name
+// Updated FriendItem component to display avatar photo
 function FriendItem({ friendUid, setSelectedFriend }) {
     const [friendData, setFriendData] = useState(null);
 
@@ -79,10 +80,19 @@ function FriendItem({ friendUid, setSelectedFriend }) {
 
     return (
         <div className="friend-item" onClick={() => setSelectedFriend(friendData)}>
+            {/* Display avatar photo */}
+            <img src={ 'https://api.adorable.io/avatars/23/abott@adorable.png'} alt="Avatar" />
+            {/* <img
+
+                src={friendData?.photoURL || 'https://via.placeholder.com/50'} // Use a placeholder if photoURL is not available
+                alt={`${friendData?.username}'s avatar`}
+                className="friend-avatar"
+            /> */}
             <p>{friendData?.username || 'Loading...'}</p>
         </div>
     );
 }
+
 
 // Private chat component between the current user and a friend
 function PrivateChat({ friend }) {

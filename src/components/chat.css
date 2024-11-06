@@ -144,3 +144,61 @@ img {
   border-radius: 50%;
   margin: 2px 5px;
 }
+/* Updated CSS for a beautiful friend list */
+.friends-list {
+  text-align: center;
+  margin: 20px;
+  padding: 20px;
+  background-color: #f0f0ff;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  color: white;
+}
+
+.friends-list h3 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #000000;
+}
+
+
+.friend-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Styling for avatar photos */
+.friend-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 15px;
+  object-fit: cover; /* Ensure the image covers the area without distortion */
+}
+
+/* Updated friend-item styling */
+.friend-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Align items to the left */
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 8px;
+  background-color: #1565C0;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.friend-item p {
+  font-size: 1.5rem;
+  color: #ffffff;
+  margin: 0;
+}
+
+
+.friend-item img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
