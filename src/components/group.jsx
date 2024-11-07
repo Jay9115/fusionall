@@ -42,6 +42,7 @@ function Group() {
     };
 
     return (
+        
         <div className="main-page-container">
             {/* Display list of groups if no group is selected */}
             {!selectedGroup && (

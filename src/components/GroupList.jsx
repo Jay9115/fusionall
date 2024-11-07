@@ -12,7 +12,7 @@ function GroupList({ groups, setSelectedGroup }) {
                     </div>
                 ))
             ) : (
-                <p>No groups available. Create one using the + button.</p>
+                <p>No groups available.Create one using the + button.</p>
             )}
         </div>
     );

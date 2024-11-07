@@ -5,18 +5,23 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, firestore } from './firebase';
 import AuthButtons from "./AuthButtons";
 
-function Chat() {
-    const [user] = useAuthState(auth);
-    const [selectedFriend, setSelectedFriend] = useState(null); // Selected friend's private chat
 
+function Chat() {
+     // Selected friend's private chat
+     const [user] = useAuthState(auth);
+     const [selectedFriend, setSelectedFriend] = useState(null);
     return (
         <div className="App">
+        
             <section>
+            
                 {user ? (
                     selectedFriend ? (
                         <PrivateChat friend={selectedFriend} />
                     ) : (
+                        
                         <FriendsList setSelectedFriend={setSelectedFriend} />
+                        
                     )
                 ) : (
                     <AuthButtons />
@@ -145,6 +150,7 @@ function PrivateChat({ friend }) {
                 <h3>Chat with {friend.username}</h3>
                 {messages && messages.map((msg, idx) => <ChatMessage key={idx} message={msg} />)}
                 <span ref={dummy}></span>
+                
             </main>
 
             <form onSubmit={sendMessage}>
@@ -170,6 +176,7 @@ function ChatMessage({ message }) {
         <div className={`message ${messageClass}`}>
             <img src={photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'} alt="Avatar" />
             <p>{text}</p>
+            
         </div>
     );
 }
