@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { collection, query, where, getDocs, doc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { firestore, auth } from './firebase'; // Ensure firebase config is properly imported
-import FriendRequests from './FriendRequests';
-import "./Horizontalnav.css";
+import FriendRequests from './FriendRequests'; // Assuming this is your friend request component
+import './Horizontalnav.css';
 
 const HorizontalNav = () => {
     const [searchTerm, setSearchTerm] = useState(''); // State for search term
@@ -54,42 +54,36 @@ const HorizontalNav = () => {
 
     return (
         <nav className="horizontal-nav" id="horizontal-nav">
-            {/* Left side: Show Friend Requests */}
-            <div className="show-requests-container">
-                {/* <button onClick={() => setShowRequests((prev) => !prev)}>
-                    {showRequests ? 'Hide Requests' : 'Show Friend Requests'}
-                </button>
-
-                {showRequests && <FriendRequests />} Show friend requests dropdown */}
-                <FriendRequests />
-            </div>
-
-            {/* Middle: Search Bar */}
-            <div className="search-container">
-                <input
-                    type="text"
-                    id="search"
-                    placeholder="Search..."
-                    value={searchTerm}
-                    onChange={handleSearchChange}
-                />
-                {searchResults.length > 0 && (
-                    <div className="search-results">
-                        {searchResults.map((user) => (
-                            <div key={user.uid} className="search-result-item">
-                                <span>{user.username}</span>
-                                <button onClick={() => sendFriendRequest(user.uid)}>
-                                    Add Friend
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
-
-            {/* Right side: Brand Logo/Name */}
-            <div className="brand-name">
+            {/* Left side: Brand Logo/Name with link to Home */}
+            <div className="brand-name" onClick={() => window.location.href = '/'}>
                 <h3><b>FusionAll</b></h3>
+            </div>
+
+            {/* Center section: Search and Notification */}
+            <div className="center-section">
+                <div className="search-container">
+                    <input
+                        type="text"
+                        id="search"
+                        placeholder="Search..."
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                    />
+                    {searchTerm && (
+                        <div className="search-results">
+                            {searchResults.map((result, index) => (
+                                <div key={index} className="search-result-item">
+                                    <span>{result.username}</span>
+                                    <button onClick={() => sendFriendRequest(result.uid)}>Add Friend</button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                <div className="notification-container">
+                    <FriendRequests /> {/* This replaces the notification bell with your FriendRequests component */}
+                </div>
             </div>
         </nav>
     );

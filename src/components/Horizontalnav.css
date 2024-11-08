@@ -14,26 +14,21 @@
     z-index: 2;
     box-shadow: 0 4px 8px rgba(255, 255, 255, 0.3);
     border-bottom: 1px solid #ddd;
+    gap: 10px;
 }
 
-/* Left Side: Show Requests Button */
-.show-requests-container {
+/* Brand Name */
+.brand-name {
+    color: #ffffff;
+    font-size: 1.5em;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Center section to contain search and notification */
+.center-section {
     display: flex;
     align-items: center;
-}
-
-.show-requests-container button {
-    background-color: #ffffff;
-    color: #206ab6;
-    border: none;
-    border-radius: 5px;
-    padding: 8px 12px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.show-requests-container button:hover {
-    background-color: #074571;
 }
 
 /* Center: Search Bar */
@@ -42,6 +37,7 @@
     flex-direction: column;
     align-items: center;
     position: relative;
+    margin-right: 50px;
 }
 
 .search-container input {
@@ -49,65 +45,81 @@
     border: none;
     outline: none;
     border-radius: 25px;
+    color: black;
     width: 250px;
     background-color: rgba(255, 255, 255, 0.9);
     transition: width 0.3s ease-in-out;
+    
 }
 
+.search-container input:focus {
+    width: 300px;
+}
+
+/* Notification Container */
+.notification-container {
+    margin-left: 30px;
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+}
+
+/* Search Results */
 .search-results {
     position: absolute;
-    top: 45px; /* Adjust to be right under the input box */
+    top: 100%; /* Ensures it appears directly below the search input */
+    left: 0;
     width: 100%;
-    background-color: rgb(255, 255, 255);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 300px; /* Matches the expanded width of the input */
+    background-color: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     z-index: 99;
     max-height: 200px;
     overflow-y: auto;
+    transform: translateX(-50%); /* Centers the search results with the search bar */
 }
 
+/* Search Result Item */
 .search-result-item {
-    padding: 10px;
+    padding: 12px;
     border-bottom: 1px solid #ddd;
     color: #1a4f85;
     display: flex;
     justify-content: space-between;
+    background-color: #fff;
+    transition: background-color 0.3s;
+}
+
+.search-result-item:hover {
+    background-color: #f1f1f1;
 }
 
 .search-result-item button {
     background-color: #007bff;
-   color: rgb(0, 0, 0);
+    color: #fff;
     border: none;
     padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
 }
 
-/* Right Side: Logo */
-.brand-name {
-    color: #ffffff;
-    font-size: 1.5em;
-    font-weight: 600;
-    margin-left: auto;
-}
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .horizontal-nav {
+        flex-direction: column;
+        height: auto;
+        padding: 15px;
+    }
 
-/* Friend Requests Dropdown */
-.friend-requests-container {
-    position: absolute;
-    left: 0;
-    top: 45px; /* Adjust so it's right under the Show Requests button */
-    width: 200px;
-    background-color: white;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    z-index: 99;
-    max-height: 200px;
-    overflow-y: auto;
-}
+    .search-container {
+        width: 100%;
+        margin-top: 10px;
+    }
 
-.friend-requests-container .friend-request-item {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    display: flex;
-    justify-content: space-between;
+    .search-results {
+        width: 100%; /* Takes the full width on smaller screens */
+        left: 0;
+        transform: none; /* Remove centering for mobile */
+    }
 }

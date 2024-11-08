@@ -4,7 +4,7 @@
     display: inline-block;
 }
 
-/* Dropdown content (hidden by default) */
+/* Dropdown content */
 .friend-requests-content {
     display: none; /* Hidden by default */
     position: absolute;
@@ -15,9 +15,12 @@
     padding: 10px;
     z-index: 1;
     border-radius: 5px;
+    right: 0; /* Position to the right of the icon initially */
+    top: 100%;
+    transform: translateX(0);
 }
 
-/* Show the dropdown when hovered or clicked */
+/* Show the dropdown on hover or when active */
 .friend-requests-dropdown:hover .friend-requests-content,
 .friend-requests-dropdown.active .friend-requests-content {
     display: block; 
