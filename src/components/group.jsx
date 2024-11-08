@@ -1,15 +1,10 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import GroupList from './GroupList'; // List of groups component
 import GroupChat from './GroupChat'; // Group chat component
 import GroupCreation from './GroupCreation'; // Group creation modal
 import { auth, firestore } from './firebase';
 import './group.css';
-import FriendList from  './firebase'
-import { collection, query, where, getDocs, addDoc, serverTimestamp , doc} from 'firebase/firestore'; // Firebase v9 functions
-
-// import { firestore, auth } from './firebase'; // Firebase utilities
-
-
+import { collection, query, where, getDocs, addDoc, serverTimestamp } from 'firebase/firestore'; // Firebase v9 functions
 
 function Group() {
     const [groups, setGroups] = useState([]);
@@ -42,40 +37,45 @@ function Group() {
 
         // Add group to Firestore
         const groupRef = collection(firestore, 'groups');
-        await addDoc(groupRef, groupData);
-        setGroups([...groups, groupData]); // Update the group list
+        const newGroupRef = await addDoc(groupRef, groupData);
+        setGroups([...groups, { id: newGroupRef.id, ...groupData }]); // Update the group list
     };
 
     return (
+        
         <div className="main-page-container">
+            {/* Display list of groups if no group is selected */}
+            {!selectedGroup && (
+                <>
+                    <GroupList groups={groups} setSelectedGroup={setSelectedGroup} />
 
-            {/* Display list of groups */}
-            <GroupList groups={groups} setSelectedGroup={setSelectedGroup} />
+                    {/* Plus symbol for opening the group creation modal */}
+                    <button className="add-group-btn" onClick={() => setShowGroupModal(true)}>
+                        +
+                    </button>
 
-            {/* Display group chat if a group is selected */}
-            {selectedGroup ? (
-                <GroupChat groupId={selectedGroup.id} />
-            ) : (
-                <p className="no-group-message">Select a group to start chatting!</p>
+                    {/* Group creation modal */}
+                    {showGroupModal && (
+                        <GroupCreation
+                            friends={[]} // Pass friends list here
+                            createGroup={createGroup}
+                            closeModal={() => setShowGroupModal(false)}
+                        />
+                    )}
+                </>
             )}
 
-            {/* Plus symbol for opening the group creation modal */}
-            <button className="add-group-btn" onClick={() => setShowGroupModal(true)}>
-                +
-            </button>
-
-            {/* Group creation modal */}
-            {showGroupModal && (
-                <GroupCreation
-                    friends={[]} // Pass friends list here
-                    createGroup={createGroup}
-                    closeModal={() => setShowGroupModal(false)}
-                />
+            {/* Display group chat if a group is selected */}
+            {selectedGroup && (
+                <>
+                    <button className="back-button" onClick={() => setSelectedGroup(null)}>
+                        ← Back to Groups
+                    </button>
+                    <GroupChat groupId={selectedGroup.id} />
+                </>
             )}
         </div>
     );
 }
-
-
 
 export default Group;
