@@ -6,6 +6,8 @@ import VerticalNav from "./components/VerticalNav";
 import Chat from "./components/chat"; // Ensure the Chat component is properly named
 import AuthButtons from "./components/AuthButtons";
 import Group from "./components/group";
+// import Homepage from './components/homepage';
+import Home from './components/Home';
 import Materials from "./components/Materials";
 
 function App() {
@@ -25,7 +27,7 @@ function App() {
             {/* Main Content Area */}
             <div className="content">
                 {/* Conditional rendering of sections */}
-                {activeSection === "Home" && <Homepage />}
+                {/* {activeSection === "Home" && <Homepage />} */}
                 {activeSection === "Login" && <AuthButtons />}
                 {activeSection === "Home" && <Home/>}
                 {activeSection === "Chat" && <Chat />}
