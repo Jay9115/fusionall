@@ -6,180 +6,174 @@ import { auth, firestore } from './firebase';
 import AuthButtons from "./AuthButtons";
 
 function Chat() {
-    const [user] = useAuthState(auth);
-    const [selectedFriend, setSelectedFriend] = useState(null);
+  const [user] = useAuthState(auth);
+  const [selectedFriend, setSelectedFriend] = useState(null);
 
-    return (
-        <div className="App">
-            <section>
-                {user ? (
-                    selectedFriend ? (
-                        <PrivateChat friend={selectedFriend} setSelectedFriend={setSelectedFriend} />
-                    ) : (
-                        <FriendsList setSelectedFriend={setSelectedFriend} />
-                    )
-                ) : (
-                    <AuthButtons />
-                )}
-            </section>
-        </div>
-    );
+  return (
+    <div className="App">
+      <section>
+        {user ? (
+          selectedFriend ? (
+            <PrivateChat friend={selectedFriend} setSelectedFriend={setSelectedFriend} />
+          ) : (
+            <FriendsList setSelectedFriend={setSelectedFriend} />
+          )
+        ) : (
+          <AuthButtons />
+        )}
+      </section>
+    </div>
+  );
 }
 
+// Component to display the user's friends
 function FriendsList({ setSelectedFriend }) {
-    const [friends, setFriends] = useState([]);
-    const [loading, setLoading] = useState(true);
+  const [friends, setFriends] = useState([]);
 
-    useEffect(() => {
-        const fetchFriends = async () => {
-            const currentUser = auth.currentUser;
-            if (currentUser) {
-                const userDocRef = doc(firestore, 'users', currentUser.uid);
-                const userSnapshot = await getDoc(userDocRef);
+  useEffect(() => {
+    const fetchFriends = async () => {
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const userDocRef = doc(firestore, 'users', currentUser.uid);
+        const userSnapshot = await getDoc(userDocRef); // Use `getDoc` for a single document
 
-                if (userSnapshot.exists()) {
-                    const userData = userSnapshot.data();
-                    setFriends(userData.friends || []);
-                }
-            }
-            setLoading(false);
-        };
-
-        fetchFriends();
-    }, []);
-
-    return (
-        <div className="friends-list">
-            <h3>Your Friends</h3>
-            {loading ? (
-                <p>Loading friends...</p>
-            ) : friends.length > 0 ? (
-                friends.map((friendUid) => (
-                    <FriendItem key={friendUid} friendUid={friendUid} setSelectedFriend={setSelectedFriend} />
-                ))
-            ) : (
-                <p>No friends yet. Add some!</p>
-            )}
-        </div>
-    );
-}
-
-function FriendItem({ friendUid, setSelectedFriend }) {
-    const [friendData, setFriendData] = useState(null);
-
-    useEffect(() => {
-        const fetchFriendData = async () => {
-            const friendDocRef = doc(firestore, 'users', friendUid);
-            const friendSnapshot = await getDoc(friendDocRef);
-            if (friendSnapshot.exists()) {
-                setFriendData(friendSnapshot.data());
-            }
-        };
-
-        fetchFriendData();
-    }, [friendUid]);
-
-    if (!friendData) return <p>Loading...</p>;
-
-    return (
-        <div className="friend-item" onClick={() => setSelectedFriend(friendData)}>
-            <img
-                src={friendData.photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'}
-                alt={`${friendData.username}'s avatar`}
-                className="friend-avatar"
-            />
-            <p>{friendData.username}</p>
-        </div>
-    );
-}
-
-function PrivateChat({ friend, setSelectedFriend }) {
-    const currentUser = auth.currentUser;
-    const dummy = useRef();
-    const [formValue, setFormValue] = useState('');
-    const [messages, setMessages] = useState([]);
-    const chatId = [currentUser.uid, friend.uid].sort().join('_');
-
-    useEffect(() => {
-        const messagesRef = collection(firestore, 'chats', chatId, 'messages');
-        const q = query(messagesRef, orderBy('timestamp'));
-
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            const messagesData = [];
-            querySnapshot.forEach((doc) => {
-                messagesData.push(doc.data());
-            });
-            setMessages(messagesData);
-            dummy.current.scrollIntoView({ behavior: 'smooth' });
-        });
-
-        return () => unsubscribe();
-    }, [chatId]);
-
-    const sendMessage = async (e) => {
-        e.preventDefault();
-        const { uid, photoURL } = currentUser;
-
-        await addDoc(collection(firestore, 'chats', chatId, 'messages'), {
-            text: formValue,
-            timestamp: serverTimestamp(),
-            sender: uid,
-            photoURL,
-        });
-
-        setFormValue('');
-        dummy.current.scrollIntoView({ behavior: 'smooth' });
+        if (userSnapshot.exists()) {
+          const userData = userSnapshot.data();
+          if (userData.friends) {
+            setFriends(userData.friends);
+          }
+        }
+      }
     };
 
-    return (
-        <div className="chat-page">
-            {/* Header */}
-            <header>
-                <div className="header-container">
-                    {/* Back Button */}
-                    <h3>{friend.username}</h3>
-                </div>
-            </header>
+    fetchFriends();
+  }, []);
 
-            {/* Main Chat Content */}
-            <main>
-                {messages.length > 0 ? (
-                    messages.map((msg, idx) => <ChatMessage key={idx} message={msg} />)
-                ) : (
-                    <p>No messages yet. Start the conversation!</p>
-                )}
-                <span ref={dummy}></span>
-            </main>
-
-            {/* Message Input */}
-            <form onSubmit={sendMessage}>
-                <input
-                    value={formValue}
-                    onChange={(e) => setFormValue(e.target.value)}
-                    placeholder="Type a message"
-                />
-                <button type="submit" disabled={!formValue.trim()}>
-                    Send
-                </button>
-                
-                <button className="back-button" onClick={() => setSelectedFriend(null)}>
-                        ←
-                    </button>
-            </form>
-        </div>
-    );
+  return (
+    <div className="friends-list">
+      <h3>Your Friends</h3>
+      {friends.length > 0 ? (
+        friends.map((friendUid) => (
+          <FriendItem key={friendUid} friendUid={friendUid} setSelectedFriend={setSelectedFriend} />
+        ))
+      ) : (
+        <p>No friends yet. Add some!</p>
+      )}
+    </div>
+  );
 }
 
-function ChatMessage({ message }) {
-    const { text, sender, photoURL } = message;
-    const messageClass = sender === auth.currentUser.uid ? 'sent' : 'received';
+// Component to display each friend's name
+function FriendItem({ friendUid, setSelectedFriend }) {
+  const [friendData, setFriendData] = useState(null);
 
-    return (
-        <div className={`message ${messageClass}`}>
-            <img src={photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'} alt="User Avatar" />
-            <p>{text}</p>
-        </div>
-    );
+  useEffect(() => {
+    const fetchFriendData = async () => {
+      const friendDocRef = doc(firestore, 'users', friendUid);
+      const friendSnapshot = await getDoc(friendDocRef);
+      setFriendData(friendSnapshot.data());
+    };
+
+    fetchFriendData();
+  }, [friendUid]);
+
+  return (
+    <div className="friend-item" onClick={() => setSelectedFriend(friendData)}>
+      <img
+        src={friendData?.photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'}
+        alt={`${friendData?.username}'s avatar`}
+        className="friend-avatar"
+      />
+      <p>{friendData?.username || 'Loading...'}</p>
+    </div>
+  );
+}
+
+// Private chat component between the current user and a friend
+function PrivateChat({ friend, setSelectedFriend }) {
+  const currentUser = auth.currentUser;
+  const dummy = useRef();
+  const [formValue, setFormValue] = useState('');
+  const [messages, setMessages] = useState([]);
+
+  // Create a consistent chatId using both users' UIDs
+  const chatId = [currentUser.uid, friend.uid].sort().join('_'); // Sorting ensures both user UIDs form the same chatId
+
+  // Fetch chat messages between the current user and the selected friend
+  useEffect(() => {
+    const messagesRef = collection(firestore, 'chats', chatId, 'messages');
+    const q = query(messagesRef, orderBy('timestamp'));
+
+    // Real-time listener for chat messages
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const messagesData = [];
+      querySnapshot.forEach((doc) => {
+        messagesData.push(doc.data());
+      });
+      setMessages(messagesData); // Set the fetched messages to state
+      dummy.current.scrollIntoView({ behavior: 'smooth' }); // Scroll to the bottom when new messages are received
+    });
+
+    // Clean up the listener when the component is unmounted
+    return () => unsubscribe();
+  }, [chatId]);
+
+  const sendMessage = async (e) => {
+    e.preventDefault();
+
+    const { uid, photoURL } = currentUser;
+
+    // Add the new message to Firestore
+    await addDoc(collection(firestore, 'chats', chatId, 'messages'), {
+      text: formValue,
+      timestamp: serverTimestamp(),
+      sender: uid,
+      photoURL,
+    });
+
+    setFormValue(''); // Clear the message input field
+    dummy.current.scrollIntoView({ behavior: 'smooth' }); // Scroll to the bottom after sending a message
+  };
+
+  return (
+    <>
+        <header>
+        {/* Display the friend's username in the header */}
+        <h3>Chat with {friend.username}</h3>
+        </header>
+        
+      <main>
+        {/* Back Button to return to the chats list */}
+        <button className="back-button" onClick={() => setSelectedFriend(null)}>Back to Chats</button>
+        {messages && messages.map((msg, idx) => <ChatMessage key={idx} message={msg} />)}
+        <span ref={dummy}></span>
+      </main>
+
+      <form onSubmit={sendMessage}>
+        <input
+          value={formValue}
+          onChange={(e) => setFormValue(e.target.value)}
+          placeholder="Type a message"
+        />
+        <button type="submit" disabled={!formValue}>
+          Send
+        </button>
+      </form>
+    </>
+  );
+}
+
+// Component to render each chat message
+function ChatMessage({ message }) {
+  const { text, sender, photoURL } = message;
+  const messageClass = sender === auth.currentUser.uid ? 'sent' : 'received';
+
+  return (
+    <div className={`message ${messageClass}`}>
+      <img src={photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'} alt="Avatar" />
+      <p>{text}</p>
+    </div>
+  );
 }
 
 export default Chat;
