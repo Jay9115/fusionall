@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import './chat.css';
-import { collection, addDoc, orderBy, query, onSnapshot, serverTimestamp, doc, getDoc } from 'firebase/firestore';
+import { collection, addDoc, orderBy, query, onSnapshot, serverTimestamp, doc, getDoc, deleteDoc } from 'firebase/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, firestore } from './firebase';
 import AuthButtons from "./AuthButtons";
@@ -26,7 +26,6 @@ function Chat() {
   );
 }
 
-// Component to display the user's friends
 function FriendsList({ setSelectedFriend }) {
   const [friends, setFriends] = useState([]);
 
@@ -35,7 +34,7 @@ function FriendsList({ setSelectedFriend }) {
       const currentUser = auth.currentUser;
       if (currentUser) {
         const userDocRef = doc(firestore, 'users', currentUser.uid);
-        const userSnapshot = await getDoc(userDocRef); // Use `getDoc` for a single document
+        const userSnapshot = await getDoc(userDocRef);
 
         if (userSnapshot.exists()) {
           const userData = userSnapshot.data();
@@ -63,7 +62,6 @@ function FriendsList({ setSelectedFriend }) {
   );
 }
 
-// Component to display each friend's name
 function FriendItem({ friendUid, setSelectedFriend }) {
   const [friendData, setFriendData] = useState(null);
 
@@ -89,32 +87,28 @@ function FriendItem({ friendUid, setSelectedFriend }) {
   );
 }
 
-// Private chat component between the current user and a friend
 function PrivateChat({ friend, setSelectedFriend }) {
   const currentUser = auth.currentUser;
   const dummy = useRef();
   const [formValue, setFormValue] = useState('');
   const [messages, setMessages] = useState([]);
+  const [selectMode, setSelectMode] = useState(false);
+  const [selectedMessages, setSelectedMessages] = useState([]);
+  const chatId = [currentUser.uid, friend.uid].sort().join('_');
 
-  // Create a consistent chatId using both users' UIDs
-  const chatId = [currentUser.uid, friend.uid].sort().join('_'); // Sorting ensures both user UIDs form the same chatId
-
-  // Fetch chat messages between the current user and the selected friend
   useEffect(() => {
     const messagesRef = collection(firestore, 'chats', chatId, 'messages');
     const q = query(messagesRef, orderBy('timestamp'));
 
-    // Real-time listener for chat messages
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const messagesData = [];
       querySnapshot.forEach((doc) => {
-        messagesData.push(doc.data());
+        messagesData.push({ id: doc.id, ...doc.data() });
       });
-      setMessages(messagesData); // Set the fetched messages to state
-      dummy.current.scrollIntoView({ behavior: 'smooth' }); // Scroll to the bottom when new messages are received
+      setMessages(messagesData);
+      dummy.current.scrollIntoView({ behavior: 'smooth' });
     });
 
-    // Clean up the listener when the component is unmounted
     return () => unsubscribe();
   }, [chatId]);
 
@@ -123,7 +117,6 @@ function PrivateChat({ friend, setSelectedFriend }) {
 
     const { uid, photoURL } = currentUser;
 
-    // Add the new message to Firestore
     await addDoc(collection(firestore, 'chats', chatId, 'messages'), {
       text: formValue,
       timestamp: serverTimestamp(),
@@ -131,21 +124,61 @@ function PrivateChat({ friend, setSelectedFriend }) {
       photoURL,
     });
 
-    setFormValue(''); // Clear the message input field
-    dummy.current.scrollIntoView({ behavior: 'smooth' }); // Scroll to the bottom after sending a message
+    setFormValue('');
+    dummy.current.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const toggleSelectMode = () => {
+    setSelectMode(!selectMode);
+    setSelectedMessages([]);
+  };
+
+  const toggleSelectMessage = (id) => {
+    setSelectedMessages((prev) =>
+      prev.includes(id) ? prev.filter((msgId) => msgId !== id) : [...prev, id]
+    );
+  };
+
+  const handleDeleteSelected = async () => {
+    for (const messageId of selectedMessages) {
+      await deleteDoc(doc(firestore, 'chats', chatId, 'messages', messageId));
+    }
+    setSelectedMessages([]);
+    setSelectMode(false);
   };
 
   return (
     <>
-        <header>
-        {/* Display the friend's username in the header */}
+      <header>
         <h3>Chat with {friend.username}</h3>
-        </header>
-        
+      </header>
+      
       <main>
-        {/* Back Button to return to the chats list */}
         <button className="back-button" onClick={() => setSelectedFriend(null)}>Back to Chats</button>
-        {messages && messages.map((msg, idx) => <ChatMessage key={idx} message={msg} />)}
+        
+        <div className="options">
+          <button onClick={toggleSelectMode}>⋮</button>
+          {selectMode && (
+            <div className="dropdown">
+              <button onClick={handleDeleteSelected} disabled={selectedMessages.length === 0}>
+                Delete 
+              </button>
+              <button onClick={toggleSelectMode}>Cancel</button>
+            </div>
+          )}
+        </div>
+        
+        {messages && messages.map((msg) => (
+          <ChatMessage
+            key={msg.id}
+            message={msg}
+            chatId={chatId}
+            selectMode={selectMode}
+            selected={selectedMessages.includes(msg.id)}
+            onSelect={() => toggleSelectMessage(msg.id)}
+          />
+        ))}
+        
         <span ref={dummy}></span>
       </main>
 
@@ -163,15 +196,17 @@ function PrivateChat({ friend, setSelectedFriend }) {
   );
 }
 
-// Component to render each chat message
-function ChatMessage({ message }) {
+function ChatMessage({ message, selectMode, selected, onSelect }) {
   const { text, sender, photoURL } = message;
   const messageClass = sender === auth.currentUser.uid ? 'sent' : 'received';
 
   return (
-    <div className={`message ${messageClass}`}>
+    <div className={`message ${messageClass} ${selected ? 'selected' : ''}`} onClick={selectMode ? onSelect : null}>
       <img src={photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'} alt="Avatar" />
       <p>{text}</p>
+      {selectMode && (
+        <input type="checkbox" checked={selected} readOnly />
+      )}
     </div>
   );
 }

@@ -2,6 +2,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { collection, addDoc, orderBy, query, serverTimestamp, onSnapshot } from 'firebase/firestore';
 import { auth, firestore } from './firebase';
+import ChatMessage from './ChatMessage';
 
 function PrivateChat({ friend, setSelectedFriend }) {
     const currentUser = auth.currentUser;
@@ -17,7 +18,7 @@ function PrivateChat({ friend, setSelectedFriend }) {
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const messagesData = [];
             querySnapshot.forEach((doc) => {
-                messagesData.push(doc.data());
+                messagesData.push({ ...doc.data(), id: doc.id });
             });
             setMessages(messagesData);
             dummy.current.scrollIntoView({ behavior: 'smooth' });
@@ -51,7 +52,9 @@ function PrivateChat({ friend, setSelectedFriend }) {
             </header>
             
             <main>
-                {messages && messages.map((msg, idx) => <ChatMessage key={idx} message={msg} />)}
+                {messages && messages.map((msg) => (
+                    <ChatMessage key={msg.id} message={msg} chatId={chatId} />
+                ))}
                 <span ref={dummy}></span>
             </main>
 
@@ -66,18 +69,6 @@ function PrivateChat({ friend, setSelectedFriend }) {
                 </button>
             </form>
         </>
-    );
-}
-
-function ChatMessage({ message }) {
-    const { text, sender, photoURL } = message;
-    const messageClass = sender === auth.currentUser.uid ? 'sent' : 'received';
-
-    return (
-        <div className={`message ${messageClass}`}>
-            <img src={photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'} alt="Avatar" />
-            <p>{text}</p>
-        </div>
     );
 }
 
