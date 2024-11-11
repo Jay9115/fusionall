@@ -3,6 +3,7 @@ import { collection, query, where, getDocs, doc, updateDoc, arrayUnion } from 'f
 import { firestore, auth } from './firebase'; // Ensure firebase config is properly imported
 import FriendRequests from './FriendRequests'; // Assuming this is your friend request component
 import './Horizontalnav.css';
+import logox from "./logo.svg";
 
 const HorizontalNav = () => {
     const [searchTerm, setSearchTerm] = useState(''); // State for search term
@@ -55,11 +56,12 @@ const HorizontalNav = () => {
     return (
         <nav className="horizontal-nav" id="horizontal-nav">
             {/* Left side: Brand Logo/Name with link to Home */}
+            <img src={logox} alt="icon" />
             <div className="brand-name" onClick={() => window.location.href = '/'}>
                 <h3><b>FusionAll</b></h3>
             </div>
-
-            {/* Center section: Search and Notification */}
+            
+                    {/* Center section: Search and Notification */}
             <div className="center-section">
                 <div className="search-container">
                     <input
