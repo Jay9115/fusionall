@@ -17,12 +17,22 @@
     gap: 10px;
 }
 
-/* Brand Name */
+/* Brand Name with Logo */
 .brand-name {
+    display: flex;
+    align-items: center;
     color: #ffffff;
     font-size: 1.5em;
     font-weight: 600;
     cursor: pointer;
+    margin-left: 0px;
+}
+
+/* Logo positioned after brand name */
+.logo-after-name {
+    margin-left: 10px; /* Adjust spacing between brand name and logo */
+    width: 30px; /* Adjust the size of the logo */
+    height: auto;
 }
 
 /* Center section to contain search and notification */
@@ -49,7 +59,6 @@
     width: 250px;
     background-color: rgba(255, 255, 255, 0.9);
     transition: width 0.3s ease-in-out;
-    
 }
 
 .search-container input:focus {
@@ -67,17 +76,17 @@
 /* Search Results */
 .search-results {
     position: absolute;
-    top: 100%; /* Ensures it appears directly below the search input */
+    top: 100%;
     left: 0;
     width: 100%;
-    max-width: 300px; /* Matches the expanded width of the input */
+    max-width: 300px;
     background-color: #ffffff;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     z-index: 99;
     max-height: 200px;
     overflow-y: auto;
-    transform: translateX(-50%); /* Centers the search results with the search bar */
+    transform: translateX(-50%);
 }
 
 /* Search Result Item */
@@ -118,8 +127,8 @@
     }
 
     .search-results {
-        width: 100%; /* Takes the full width on smaller screens */
+        width: 100%;
         left: 0;
-        transform: none; /* Remove centering for mobile */
+        transform: none;
     }
 }
