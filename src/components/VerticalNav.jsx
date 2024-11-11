@@ -5,20 +5,20 @@ const VerticalNav = ({ onNavClick }) => {
 
     const handleNavClick = (section) => {
         setActiveSection(section);
-        onNavClick(section); // Keeping the original onNavClick functionality
+        onNavClick(section);
     };
 
     return (
         <nav className="vertical-nav" id="vertical-nav">
             <ul className="nav-list">
-                {["Home", "Chat", "Groups", "Blogs", "Calendar", "Materials","Login"].map((section) => (
+                {["Home", "Chat", "Groups", "Blog", "Materials", "Login"].map((section) => (
                     <li key={section}>
                         <a
                             href={`#${section}`}
                             className={`nav-link ${activeSection === section ? "active" : ""}`}
                             onClick={() => handleNavClick(section)}
                         >
-                            <i className={`fa fa-${section.toLowerCase()}`}></i>{section}
+                            <i className={`fa fa-${section.toLowerCase()}`}></i> {section}
                         </a>
                     </li>
                 ))}
