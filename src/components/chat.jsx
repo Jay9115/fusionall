@@ -151,13 +151,10 @@ function PrivateChat({ friend, setSelectedFriend }) {
     <>
       <header>
         <h3>Chat with {friend.username}</h3>
-      </header>
-      
-      <main>
-        <button className="back-button" onClick={() => setSelectedFriend(null)}>Back to Chats</button>
         
         <div className="options">
-          <button onClick={toggleSelectMode}>⋮</button>
+        <button className="back-buttons" onClick={() => setSelectedFriend(null)}>Back</button>
+          <button className="back-buttons" onClick={toggleSelectMode}>⋮</button>
           {selectMode && (
             <div className="dropdown">
               <button onClick={handleDeleteSelected} disabled={selectedMessages.length === 0}>
@@ -167,6 +164,11 @@ function PrivateChat({ friend, setSelectedFriend }) {
             </div>
           )}
         </div>
+      </header>
+      
+      <main>
+       
+      
         
         {messages && messages.map((msg) => (
           <ChatMessage

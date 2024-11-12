@@ -1,349 +1,176 @@
-/* General body styling */
-body {
-  background-color: #282c34;
-  font-family: Arial, sans-serif;
-}
-
-/* Chat container */
-.chat {
-  text-align: center;
-  max-width: 728px;
-  margin: 0 auto;
-}
-/* Header container for the back button and friend name */
-.header-container {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  width: 100%;
-  padding: 0 10px;
-}
-
-.header-container-fixed {
-  position: fixed;
-  top: 0; /* Fixes it to the top */
-  left: 0;
-  width: 100%;
-  max-width: 728px; /* Matches chat width */
-  background-color: #181717;
-  z-index: 100; /* Stays above other elements */
-  padding: 10px;
+General Styling
+* {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
-
-/* Header styling (remove position: fixed here) */
-.chat header {
-  background-color: #181717;
-  height: 10vh;
-  min-height: 50px;
-  color: white;
-  width: 100%;
-  max-width: 728px;
+/* Header Styling */
+header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: flex-start;
-  z-index: 99;
+  background-color: #0a78ffba;
   padding: 10px;
-  box-sizing: border-box;
+  /* margin-left: 0px; */
+  color: #ffffff;
+  /* border-bottom: 1px solid #444; */
 }
-
-
-/* Styling for the "Back to Chats" button in PrivateChat */
-.back-button {
-  background-color: #282c34;
-  color: white;
-  padding: 12px 20px;
+/* Back Button Styling */
+.back-buttons {
+  background-color: #0a78ffba;
+  color: #ffffff;
+  padding: 10px;
+  font-size: 1rem;
   border: none;
-  font-size: 1.25rem;
-  cursor: pointer;
-  margin:40px 0;
-  margin-left: 1250px;
   border-radius: 8px;
-  width: auto;
-  align-self: center;
+  cursor: pointer;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  transition: background-color 0.2s, box-shadow 0.2s;
 }
 
 .back-button:hover {
-  background-color: #1a1d23; /* Darker shade for hover */
+  background-color: #677490;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
-.back-button:focus {
-  outline: none;
-}
-
-/* Main section (chat messages area) */
-.chat section {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 100vh;
-  background-color: rgb(40, 37, 53);
-}
-
-/* Chat content */
-main {
-  padding: 10px;
-  height: 70vh;
-  margin: 10vh 0 10vh;
-  overflow-y: scroll;
-  display: flex;
-  flex-direction: column;
-}
-
-main::-webkit-scrollbar {
-  width: 0.25rem;
-}
-
-main::-webkit-scrollbar-track {
-  background: #1e1e24;
-}
-
-main::-webkit-scrollbar-thumb {
-  background: #6649b8;
-}
-
-/* Form styling */
-form {
-  height: 10vh;
-  position: fixed;
-  bottom: 0;
-  background-color: rgb(24, 23, 23);
-  width: 100%;
-  max-width: 728px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 0 10px;
-  z-index: 101;
-}
-
-/* Input styling */
-form input {
-  width: 75%; /* Adjust width to leave space for the back and send buttons */
-  font-size: 1.5rem;
-  background: rgb(58, 58, 58);
-  color: white;
-  outline: none;
-  border: none;
-  padding: 0 10px;
-  margin-right: 10px; /* Space between input and buttons */
-}
-
-/* Send button styling */
-form button {
-  width: 20%;
-  background-color: rgb(104, 104, 195);
-  font-size: 1.5rem;
-  padding: 10px;
-  border: none;
-  color: white;
-  cursor: pointer;
-}
-
-/* Message styling */
-.message {
-  display: flex;
-  align-items: center;
-  margin: 10px 0;
-}
-
-.sent {
-  justify-content: flex-end;
-}
-
-.received {
-  justify-content: flex-start;
-}
-
-.sent p {
-  color: white;
-  background: #0b93f6;
-  text-align: left;
-  align-self: flex-end;
-  max-width: 60%;
-  padding: 10px;
-  border-radius: 15px;
-}
-
-.received p {
-  background: #e5e5ea;
-  color: black;
-  text-align: left;
-  align-self: flex-start;
-  max-width: 60%;
-  padding: 10px;
-  border-radius: 15px;
-}
-
-.sent img {
-  order: 1;
-  margin-left: 10px;
-}
-
-.received img {
-  order: -1;
-  margin-right: 10px;
-}
-
-img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin: 2px 5px;
-}
-
-/* Friends List Styling */
+/* Friends List */
 .friends-list {
-  text-align: center;
-  margin: 20px;
-  padding: 20px;
   background-color: #f0f0ff;
+  padding: 20px;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  color: white;
-}
-
-.friend-item.selected {
-  background-color: black;
-  color: white;
 }
 
 .friends-list h3 {
-  font-size: 1.8rem;
-  margin-bottom: 20px;
-  color: #000000;
+  margin-bottom: 15px;
+  color: #141212;
+}
+
+.friend-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin: 8px 0;
+  background-color: #1565c0;
+  color:#f0f0ff;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .friend-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .friend-avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  margin-right: 15px;
-  object-fit: cover;
+  margin-right: 10px;
 }
 
-.friend-item {
+/* Chat Area */
+main {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  height: 70vh;
+  margin-top: 20px;
+  overflow-y: auto;
+}
+
+main::-webkit-scrollbar {
+  width: 0.25rem;
+}
+
+main::-webkit-scrollbar-thumb {
+  background-color: #6649b8;
+  border-radius: 8px;
+}
+
+/* Form Styling */
+form {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  padding: 15px;
-  margin: 10px 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  max-width: 728px;
+  background-color: #181717;
+  padding: 10px;
+}
+
+form input {
+  flex: 1;
+  font-size: 1rem;
+  padding: 10px;
+  margin-right: 5px;
+  border: none;
   border-radius: 8px;
-  background-color: #1565C0;
-  transition: transform 0.2s, box-shadow 0.2s;
+  background-color: #3a3a3a;
+  color: #ffffff;
+}
+
+form button {
+  background-color: #688ac3;
+  color: #ffffff;
+  padding: 10px;
+  border: none;
+  font-size: 1rem;
+  border-radius: 8px;
   cursor: pointer;
 }
 
-.friend-item p {
-  font-size: 1.5rem;
-  color: #ffffff;
-  margin: 0;
-}
-
-.friend-item img {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  margin-right: 15px;
-}
-/* chat.css */
-
-.options {
+/* Message Styling */
+.message {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 15px;
+  max-width: 60%;
+}
+
+.sent {
+  align-self: flex-end;
+ 
+}
+
+
+.selected {
+  outline: 2px solid #ff4d4d;
+}
+
+/* Chat Options */
+.options {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
   margin-bottom: 10px;
 }
 
-.options button {
-  background: none;
-  border: none;
-  color: #ffffff;
-  font-size: 1.2rem;
-  cursor: pointer;
-  padding: 0;
-  background-color: #3a3a3a;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 5px;
-  margin-left: auto;
-}
-
-/* .dropdown {
+/* Dropdown Menu */
+.dropdown {
   position: absolute;
-  top: 40px;
-  background-color: #282c34;
-  border-radius: 4px;
-  padding: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.dropdown button {
-  color: #ffffff;
-  border: none;
-  background: #ff4c4c;
-  border-radius: 4px;
-  cursor: pointer;
-  padding: 5px 10px;
-  text-align: left;
-  margin-left: auto;
-}
-
-.dropdown button:hover {
-  background: #d43f3f;
-} */
-.message-options-dropdown {
-  position: absolute;
-  top: -40px; /* Position the dropdown above the three dots */
-  left: 50%; /* Center the dropdown */
-  transform: translateX(-50%);
-  background-color: #fff;
+  top: 45px;
+  right: 0;
+  background-color: #ffffff;
   border: 1px solid #ccc;
   border-radius: 4px;
-  width: 150px; /* Adjust the width to make it wider */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 1;
-  padding: 8px 0;
-  display: none; /* Hide by default */
+  min-width: 100px;
+  display: flex;
+  flex-direction: column;
 }
-
-.message-options-dropdown.show {
-  display: block; /* Show when the dropdown is active */
-}
-
-.message-options-dropdown button {
-  width: 100%;
-  background: none;
+.dropdown button {
+  padding: 8px;
   border: none;
-  padding: 8px 16px;
-  text-align: left;
+  background: none;
+  color: #333;
   cursor: pointer;
 }
-
-.message-options-dropdown button:hover {
-  background-color: #f0f0f0;
-}
-
-
-.message.selected {
-  background-color: rgba(255, 0, 0, 0.2);
-  border-left: 4px solid red;
-}
-
-.message input[type="checkbox"] {
-  margin-left: 10px;
+.dropdown button:hover {
+  background-color: #f2f2f2;
 }

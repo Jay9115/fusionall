@@ -28,7 +28,10 @@
 }
 
 
-
+.logo-after-name
+{
+    height:40px;
+}
 /* Center Section for Search and Notification */
 .center-section,
 .notification-container {
