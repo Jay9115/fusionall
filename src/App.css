@@ -51,7 +51,7 @@
 }
 
 /* Main Content Area */
- .content {
+.content {
     flex: 1;
     margin-left: 200px;
     padding: 80px 20px;
@@ -154,4 +154,80 @@
     font-size: 1em;
     color: #333;
     line-height: 1.6;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    /* Adjust layout for smaller screens */
+    .vertical-nav {
+        position: relative;
+        width: 100%;
+        height: auto;
+        box-shadow: none;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 10px 0;
+    }
+
+    .vertical-nav .nav-list {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-around;
+    }
+
+    .content {
+        margin-left: 0;
+        padding: 20px;
+        box-shadow: none;
+    }
+
+    .page-section h2 {
+        font-size: 1.5em;
+    }
+
+    .page-section p {
+        font-size: 1em;
+    }
+
+    .blog-form h2,
+    .blog-list h2 {
+        font-size: 1.5em;
+    }
+
+    .blog-post h3 {
+        font-size: 1.2em;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Further adjustments for very small screens */
+    .vertical-nav .nav-list li a {
+        padding: 8px;
+        font-size: 0.9em;
+    }
+
+    .content {
+        padding: 15px;
+    }
+
+    .blog-form input,
+    .blog-form textarea {
+        padding: 8px;
+    }
+
+    .blog-form button {
+        padding: 8px 15px;
+        font-size: 0.9em;
+    }
+
+    .blog-list,
+    .blog-form {
+        padding: 15px;
+    }
+
+    .blog-post {
+        padding: 10px;
+    }
 }

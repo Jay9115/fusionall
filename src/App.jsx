@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "./App.css";
-
 import HorizontalNav from "./components/Horizontalnav";
 import VerticalNav from "./components/VerticalNav";
 import Chat from "./components/chat";
@@ -14,22 +13,27 @@ import Materials from "./components/Materials";
 function App() {
     const [activeSection, setActiveSection] = useState("Home");
     const [blogs, setBlogs] = useState([]);
-    const [isWriting, setIsWriting] = useState(false); // Track if BlogEditor is open
+    const [isWriting, setIsWriting] = useState(false);
+    const [isVerticalNavVisible, setVerticalNavVisible] = useState(false); // New state for toggling VerticalNav
 
     const handleNavClick = (section) => {
         setActiveSection(section);
-        setIsWriting(false); // Close editor when navigating away
+        setIsWriting(false);
+    };
+
+    const toggleVerticalNav = () => {
+        setVerticalNavVisible(!isVerticalNavVisible); // Toggle VerticalNav visibility
     };
 
     const addBlog = (newBlog) => {
         setBlogs([newBlog, ...blogs]);
-        setIsWriting(false); // Close editor after saving
+        setIsWriting(false);
     };
 
     return (
         <div className="App">
-            <HorizontalNav onNavClick={handleNavClick} />
-            <VerticalNav onNavClick={handleNavClick} />
+            <HorizontalNav onNavClick={handleNavClick} toggleVerticalNav={toggleVerticalNav} />
+            {isVerticalNavVisible && <VerticalNav onNavClick={handleNavClick} />} {/* Conditionally render VerticalNav */}
 
             <div className="content">
                 {activeSection === "Home" && <Home />}

@@ -28,6 +28,7 @@
     margin-left: 0px;
 }
 
+
 /* Logo positioned after brand name */
 .logo-after-name {
     margin-left: 10px; /* Adjust spacing between brand name and logo */
@@ -114,7 +115,7 @@
 }
 
 /* Mobile Responsiveness */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
     .horizontal-nav {
         flex-direction: column;
         height: auto;
@@ -131,4 +132,17 @@
         left: 0;
         transform: none;
     }
+} */
+.horizontal-nav .menu-button {
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    color: #ffffff;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: color 0.3s;
+}
+
+.horizontal-nav .menu-button:hover {
+    color: #0d47a1;
 }
