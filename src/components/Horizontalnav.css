@@ -4,7 +4,7 @@
     align-items: center;
     justify-content: space-between;
     background: linear-gradient(135deg, #206ab6, #1a4f85, #206ab6);
-    color: #ffffff;
+    color: #fff;
     padding: 10px 20px;
     width: 100%;
     height: 60px;
@@ -17,36 +17,29 @@
     gap: 10px;
 }
 
-/* Brand Name with Logo */
+/* Brand and Logo */
 .brand-name {
     display: flex;
     align-items: center;
-    color: #ffffff;
+    color: #fff;
     font-size: 1.5em;
     font-weight: 600;
     cursor: pointer;
-    margin-left: 0px;
 }
 
-
-/* Logo positioned after brand name */
 .logo-after-name {
-    margin-left: 10px; /* Adjust spacing between brand name and logo */
-    width: 30px; /* Adjust the size of the logo */
-    height: auto;
+    margin-left: 10px;
+    width: 30px;
 }
 
-/* Center section to contain search and notification */
-.center-section {
+/* Center Section for Search and Notification */
+.center-section,
+.notification-container {
     display: flex;
     align-items: center;
 }
 
-/* Center: Search Bar */
 .search-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     position: relative;
     margin-right: 50px;
 }
@@ -54,24 +47,15 @@
 .search-container input {
     padding: 8px 12px;
     border: none;
-    outline: none;
     border-radius: 25px;
-    color: black;
     width: 250px;
-    background-color: rgba(255, 255, 255, 0.9);
-    transition: width 0.3s ease-in-out;
+    background: rgba(255, 255, 255, 0.9);
+    color: black;
+    transition: width 0.3s;
 }
 
 .search-container input:focus {
     width: 300px;
-}
-
-/* Notification Container */
-.notification-container {
-    margin-left: 30px;
-    display: flex;
-    align-items: center;
-    margin-right: 20px;
 }
 
 /* Search Results */
@@ -81,7 +65,7 @@
     left: 0;
     width: 100%;
     max-width: 300px;
-    background-color: #ffffff;
+    background: #fff;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     z-index: 99;
@@ -90,59 +74,25 @@
     transform: translateX(-50%);
 }
 
-/* Search Result Item */
 .search-result-item {
     padding: 12px;
     border-bottom: 1px solid #ddd;
     color: #1a4f85;
     display: flex;
     justify-content: space-between;
-    background-color: #fff;
-    transition: background-color 0.3s;
+    background: #fff;
+    transition: background 0.3s;
 }
 
 .search-result-item:hover {
-    background-color: #f1f1f1;
+    background: #f1f1f1;
 }
 
 .search-result-item button {
-    background-color: #007bff;
+    background: #007bff;
     color: #fff;
     border: none;
     padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
-}
-
-/* Mobile Responsiveness */
-/* @media (max-width: 768px) {
-    .horizontal-nav {
-        flex-direction: column;
-        height: auto;
-        padding: 15px;
-    }
-
-    .search-container {
-        width: 100%;
-        margin-top: 10px;
-    }
-
-    .search-results {
-        width: 100%;
-        left: 0;
-        transform: none;
-    }
-} */
-.horizontal-nav .menu-button {
-    background: none;
-    border: none;
-    font-size: 1.5em;
-    color: #ffffff;
-    cursor: pointer;
-    margin-right: 10px;
-    transition: color 0.3s;
-}
-
-.horizontal-nav .menu-button:hover {
-    color: #0d47a1;
 }

@@ -13,27 +13,22 @@ import Materials from "./components/Materials";
 function App() {
     const [activeSection, setActiveSection] = useState("Home");
     const [blogs, setBlogs] = useState([]);
-    const [isWriting, setIsWriting] = useState(false);
-    const [isVerticalNavVisible, setVerticalNavVisible] = useState(false); // New state for toggling VerticalNav
+    const [isWriting, setIsWriting] = useState(false); // Track if BlogEditor is open
 
     const handleNavClick = (section) => {
         setActiveSection(section);
-        setIsWriting(false);
-    };
-
-    const toggleVerticalNav = () => {
-        setVerticalNavVisible(!isVerticalNavVisible); // Toggle VerticalNav visibility
+        setIsWriting(false); // Close editor when navigating away
     };
 
     const addBlog = (newBlog) => {
         setBlogs([newBlog, ...blogs]);
-        setIsWriting(false);
+        setIsWriting(false); // Close editor after saving
     };
 
     return (
         <div className="App">
-            <HorizontalNav onNavClick={handleNavClick} toggleVerticalNav={toggleVerticalNav} />
-            {isVerticalNavVisible && <VerticalNav onNavClick={handleNavClick} />} {/* Conditionally render VerticalNav */}
+            <HorizontalNav onNavClick={handleNavClick} />
+            <VerticalNav onNavClick={handleNavClick} />
 
             <div className="content">
                 {activeSection === "Home" && <Home />}

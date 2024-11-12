@@ -5,11 +5,10 @@ import FriendRequests from './FriendRequests';
 import './Horizontalnav.css';
 import logox from "./logo.svg";
 
-const HorizontalNav = ({ toggleVerticalNav }) => {
+const HorizontalNav = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const currentUser = auth.currentUser;
-    const [showRequests, setShowRequests] = useState(false);
 
     const handleSearchChange = async (e) => {
         const searchValue = e.target.value;
@@ -50,13 +49,10 @@ const HorizontalNav = ({ toggleVerticalNav }) => {
 
     return (
         <nav className="horizontal-nav" id="horizontal-nav">
-            {/* Menu Button to Toggle VerticalNav */}
-            <button onClick={toggleVerticalNav} className="menu-button">☰</button> {/* Add this line */}
-            
             {/* Left side: Brand Name with Logo */}
             <div className="brand-name" onClick={() => window.location.href = '/'}>
                 <h3><b>FusionAll</b></h3>
-                <img src={logox} alt="icon" className="logo-after-name" />
+                <img src={logox} alt="icon" className="logo-after-name" /> {/* Logo positioned after the brand name */}
             </div>
 
             {/* Center section: Search and Notification */}
