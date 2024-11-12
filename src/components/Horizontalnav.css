@@ -27,10 +27,7 @@
     cursor: pointer;
 }
 
-.logo-after-name {
-    margin-left: 10px;
-    width: 30px;
-}
+
 
 /* Center Section for Search and Notification */
 .center-section,
@@ -54,9 +51,6 @@
     transition: width 0.3s;
 }
 
-.search-container input:focus {
-    width: 300px;
-}
 
 /* Search Results */
 .search-results {
