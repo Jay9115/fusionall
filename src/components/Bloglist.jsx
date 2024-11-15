@@ -10,21 +10,19 @@ function BlogList() {
     const [currentUserId, setCurrentUserId] = useState(null);
 
     useEffect(() => {
-        // Get the current user ID
         const auth = getAuth();
         const user = auth.currentUser;
         if (user) {
             setCurrentUserId(user.uid);
         }
 
-        // Fetch all blogs
         const allBlogsRef = collectionGroup(firestore, 'BlogEntries');
         const q = query(allBlogsRef, orderBy('date', 'desc'));
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const blogsData = snapshot.docs.map((doc) => ({
                 id: doc.id,
-                path: doc.ref.path, // Include full path for deletion
+                path: doc.ref.path,
                 ...doc.data(),
             }));
             setBlogs(blogsData);
@@ -38,13 +36,13 @@ function BlogList() {
         setExpandedBlogId((prevId) => (prevId === blogId ? null : blogId));
     };
 
-    const handleDelete = async (blogPath) => {
+    const handleDelete = async (blogId, blogPath) => {
         try {
-            const blogRef = doc(firestore, blogPath); // Use the full document path
+            const blogRef = doc(firestore, blogPath);
             await deleteDoc(blogRef);
             alert('Blog deleted successfully.');
         } catch (error) {
-            console.error('Error deleting blog:', error);
+            console.error('Error deleting blog: ', error);
             alert('Failed to delete the blog. Please try again.');
         }
     };
@@ -71,31 +69,34 @@ function BlogList() {
                             cursor: 'pointer',
                         }}
                     >
-                        <h3
+                        <h2
                             style={{
                                 margin: '0 0 5px 0',
+                                fontSize: '1.5em', // Increased font size for the title
                                 color: expandedBlogId === blog.id ? '#333' : '#007BFF',
                                 textDecoration: expandedBlogId === blog.id ? 'none' : 'underline',
                             }}
                             onClick={() => handleToggle(blog.id)}
                         >
                             {blog.title}
-                        </h3>
+                        </h2>
                         {expandedBlogId === blog.id && (
                             <div>
-                                <p>{blog.content}</p>
-                                <p className="blog-author">
-                                    Author: {blog.authorName || blog.authorId || 'Unknown'}
+                                <p className="blog-author" style={{ margin: '5px 0', fontWeight: 'bold' }}>
+                                    Author: {blog.authorName || 'Unknown'}
                                 </p>
-                                <p className="blog-date">
+                                <p>{blog.content}</p>
+                                <p
+                                    className="blog-date"
+                                    style={{ fontSize: '0.8em', color: '#555', marginTop: '10px' }}
+                                >
                                     Posted on: {new Date(blog.date?.seconds * 1000).toLocaleString()}
                                 </p>
-                                {/* Display delete button only if the current user is the author */}
                                 {currentUserId === blog.authorId && (
                                     <button
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            handleDelete(blog.path);
+                                            handleDelete(blog.id, blog.path);
                                         }}
                                         style={{
                                             marginTop: '10px',

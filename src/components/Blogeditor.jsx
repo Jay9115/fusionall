@@ -28,16 +28,15 @@ const BlogEditor = ({ onCancel }) => {
 
         fetchUsername();
     }, []);
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         const currentUser = auth.currentUser;
-
+    
         if (!currentUser) {
             alert("Please log in to save your blog.");
             return;
         }
-
+    
         if (title && content) {
             try {
                 const userBlogsRef = collection(firestore, 'Blogs', currentUser.uid, 'BlogEntries');
@@ -45,11 +44,12 @@ const BlogEditor = ({ onCancel }) => {
                     title,
                     content,
                     date: serverTimestamp(),
-                    authorId: username, // Save the username as authorId
+                    authorId: currentUser.uid, // Save the UID as authorId
+                    authorName: username,      // Save the username for display purposes
                 });
                 alert("Blog saved successfully!");
-                setTitle('');
-                setContent('');
+                setTitle(''); // Clear the title
+                setContent(''); // Clear the content
             } catch (error) {
                 console.error("Error saving blog:", error);
                 alert("Failed to save the blog. Please try again.");
@@ -58,7 +58,7 @@ const BlogEditor = ({ onCancel }) => {
             alert("Both title and content are required.");
         }
     };
-
+    
     return (
         <div className="blog-editor">
             <h2>Write a New Blog</h2>
