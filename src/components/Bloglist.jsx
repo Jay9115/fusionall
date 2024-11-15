@@ -10,19 +10,21 @@ function BlogList() {
     const [currentUserId, setCurrentUserId] = useState(null);
 
     useEffect(() => {
+        // Get current user ID
         const auth = getAuth();
         const user = auth.currentUser;
         if (user) {
             setCurrentUserId(user.uid);
         }
 
+        // Fetch all blogs
         const allBlogsRef = collectionGroup(firestore, 'BlogEntries');
         const q = query(allBlogsRef, orderBy('date', 'desc'));
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const blogsData = snapshot.docs.map((doc) => ({
                 id: doc.id,
-                path: doc.ref.path,
+                path: doc.ref.path, // Include full path
                 ...doc.data(),
             }));
             setBlogs(blogsData);
@@ -38,7 +40,7 @@ function BlogList() {
 
     const handleDelete = async (blogId, blogPath) => {
         try {
-            const blogRef = doc(firestore, blogPath);
+            const blogRef = doc(firestore, blogPath); // Use the provided path
             await deleteDoc(blogRef);
             alert('Blog deleted successfully.');
         } catch (error) {
@@ -69,20 +71,27 @@ function BlogList() {
                             cursor: 'pointer',
                         }}
                     >
-                        <h2
+                        <h3
                             style={{
                                 margin: '0 0 5px 0',
-                                fontSize: '1.5em', // Increased font size for the title
                                 color: expandedBlogId === blog.id ? '#333' : '#007BFF',
                                 textDecoration: expandedBlogId === blog.id ? 'none' : 'underline',
+                                fontSize: '1.2em', // Increased font size for the title
                             }}
                             onClick={() => handleToggle(blog.id)}
                         >
                             {blog.title}
-                        </h2>
+                        </h3>
                         {expandedBlogId === blog.id && (
                             <div>
-                                <p className="blog-author" style={{ margin: '5px 0', fontWeight: 'bold' }}>
+                                <p
+                                    className="blog-author"
+                                    style={{
+                                        margin: '5px 0',
+                                        fontWeight: 'bold',
+                                        fontSize: '0.8em', // Decreased font size for author
+                                    }}
+                                >
                                     Author: {blog.authorName || 'Unknown'}
                                 </p>
                                 <p>{blog.content}</p>
