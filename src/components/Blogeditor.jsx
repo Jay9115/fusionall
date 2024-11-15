@@ -1,17 +1,38 @@
-// src/BlogEditor.js
 import React, { useState } from 'react';
 import './Blogeditor.css'; // Optional: for styling the editor
+import { auth, firestore } from './firebase'; // Import your Firebase setup
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
-const BlogEditor = ({ onSave, onCancel }) => {
+const BlogEditor = ({ onCancel }) => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        const currentUser = auth.currentUser;
+
+        if (!currentUser) {
+            alert("Please log in to save your blog.");
+            return;
+        }
+
         if (title && content) {
-            onSave({ title, content, date: new Date().toLocaleString() });
-            setTitle('');
-            setContent('');
+            try {
+                const userBlogsRef = collection(firestore, 'Blogs', currentUser.uid, 'BlogEntries');
+                await addDoc(userBlogsRef, {
+                    title,
+                    content,
+                    date: serverTimestamp(),
+                });
+                alert("Blog saved successfully!");
+                setTitle('');
+                setContent('');
+            } catch (error) {
+                console.error("Error saving blog:", error);
+                alert("Failed to save the blog. Please try again.");
+            }
+        } else {
+            alert("Both title and content are required.");
         }
     };
 
