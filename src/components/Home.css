@@ -27,10 +27,17 @@ body {
     font-weight: bold;
 }
 
+.navbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem; /* Adds space between links */
+}
+
 .navbar a {
-    margin: 0 1rem;
+    margin: 0;
     color: #fff;
     text-decoration: none;
+    font-size: 1rem;
 }
 
 .cta-button {
@@ -45,7 +52,7 @@ body {
 /* Hero */
 .hero {
     text-align: center;
-    padding: 2rem;
+    padding: 2rem 1rem;
     background: linear-gradient(to right, #004aad, #007bff);
     color: #fff;
     width: 100%;
@@ -109,5 +116,92 @@ body {
     text-align: center;
     background: #004aad;
     color: #fff;
-    
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .navbar {
+        justify-content: center;
+        gap: 1.5rem; /* Increased space between links */
+    }
+
+    .navbar a {
+        font-size: 0.9rem; /* Smaller font size for medium screens */
+    }
+
+    .features-grid {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .hero .subheading {
+        font-size: 1rem;
+    }
+
+    .navbar {
+        gap: 2rem; /* Further increased space */
+    }
+
+    .navbar a {
+        font-size: 0.8rem; /* Smaller font size for small screens */
+    }
+
+    .features-grid {
+        margin: 1rem;
+    }
+
+    .feature {
+        flex: 1 1 100%;
+        margin: 0.5rem 0;
+    }
+}
+
+@media (max-width: 320px) {
+    .header {
+        padding: 0.5rem 1rem;
+    }
+
+    .logo {
+        font-size: 1.5rem;
+    }
+
+    .navbar {
+        flex-direction: column;
+        gap: 2.5rem; /* Increased gap for very small screens */
+    }
+
+    .navbar a {
+        font-size: 0.7rem; /* Smallest font size */
+    }
+
+    .hero h1 {
+        font-size: 1.8rem;
+    }
+
+    .hero .subheading {
+        font-size: 0.9rem;
+    }
+
+    .about {
+        padding: 1.5rem 1rem;
+    }
+
+    .feature .icon {
+        font-size: 1.5rem;
+    }
+
+    .footer {
+        font-size: 0.8rem;
+    }
 }
