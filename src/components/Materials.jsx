@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, listAll } from 'firebase/storage';
 import { getAuth } from 'firebase/auth';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
 import { firestore } from './firebase';
 import GroupList from './GroupList';
-import { onLog } from 'firebase/app';
 
 const Materials = () => {
   const [file, setFile] = useState(null);
@@ -13,6 +12,7 @@ const Materials = () => {
   const [groups, setGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [fileUrls, setFileUrls] = useState([]);
+  const [userNames, setUserNames] = useState({}); // Store uploader names by UID
 
   // Fetch the groups the user has joined
   useEffect(() => {
@@ -71,6 +71,16 @@ const Materials = () => {
     );
   };
 
+  // Fetch uploader names from Firestore
+  const fetchUserName = async (uid) => {
+    if (userNames[uid]) return userNames[uid]; // Return cached name if available
+    const userDoc = doc(firestore, 'users', uid); // Adjust collection name if needed
+    const userSnap = await getDoc(userDoc);
+    const userName = userSnap.exists() ? userSnap.data().name : 'Unknown User';
+    setUserNames((prev) => ({ ...prev, [uid]: userName })); // Cache the name
+    return userName;
+  };
+
   // Fetch files for the selected group
   const fetchFiles = async (group) => {
     if (!group) return;
@@ -79,10 +89,12 @@ const Materials = () => {
     const groupFilesRef = ref(storage, `groups/${group.id}/files`);
     
     listAll(groupFilesRef)
-      .then((res) => {
+      .then(async (res) => {
         const filePromises = res.items.map(async (itemRef) => {
           const downloadURL = await getDownloadURL(itemRef);
-          return { name: itemRef.name, url: downloadURL }; // Get file name and URL
+          const uploaderUid = itemRef.name.split('_')[0]; // Extract UID
+          const uploaderName = await fetchUserName(uploaderUid); // Fetch uploader name
+          return { name: itemRef.name.split('_').slice(1).join('_'), url: downloadURL, uploader: uploaderName };
         });
         return Promise.all(filePromises);
       })
@@ -108,20 +120,29 @@ const Materials = () => {
           <h4>Files for Group: {selectedGroup.groupName}</h4>
           <input type="file" onChange={handleFileChange} />
           <button onClick={handleUpload}>Upload</button>
-          <div style={{ width: `${progress}% `, background: 'blue', height: '5px' }}></div>
+          <div style={{ width: `${progress}%`, background: 'blue', height: '5px' }}></div>
 
-          
           <h5>Previous Files:</h5>
-          <ul>
-            {fileUrls.map((file, index) => (
-              
-              <li  key={index}>
-                <a href={file.url} target="_blank" rel="noopener noreferrer">
-                  {file.name}
-                </a>
-              </li>
-            ))}
-          </ul>
+          <table>
+            <thead>
+              <tr>
+                <th>File Name</th>
+                <th>Uploader</th>
+                <th>Download Link</th>
+              </tr>
+            </thead>
+            <tbody>
+              {fileUrls.map((file, index) => (
+                <tr key={index}>
+                  <td>{file.name}</td>
+                  <td>{file.uploader}</td>
+                  <td>
+                    <a href={file.url} target="_blank" rel="noopener noreferrer">Download</a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>
