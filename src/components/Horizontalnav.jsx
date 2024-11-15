@@ -65,6 +65,7 @@ const HorizontalNav = () => {
                         value={searchTerm}
                         onChange={handleSearchChange}
                     />
+                    
                     {searchTerm && (
                         <div className="search-results">
                             {searchResults.map((result, index) => (
@@ -72,14 +73,17 @@ const HorizontalNav = () => {
                                     <span>{result.username}</span>
                                     <button onClick={() => sendFriendRequest(result.uid)}>Add Friend</button>
                                 </div>
+                                
                             ))}
                         </div>
+                        
                     )}
+                   
                 </div>
-
-                <div className="notification-container">
+                <div className="notification-containr">
                     <FriendRequests />
                 </div>
+                
             </div>
         </nav>
     );

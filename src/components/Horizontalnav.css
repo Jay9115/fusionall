@@ -41,6 +41,7 @@
 
 /* Search Container */
 .search-container {
+    
     position: relative;
     margin-right: 50px;
 }
@@ -120,26 +121,28 @@
 @media (max-width: 480px) {
     .horizontal-nav {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
+        gap: 10px;
     }
 
     .brand-name {
-        font-size: 1.2em;
+        font-size: 0.8em;
     }
 
     .search-container input {
-        width: 100%;
+        width: 70%;
         align-items: flex-start;
+        justify-content: center;
     }
 
     .search-container {
-        width: 100%;
+        width: 50%;
+        margin-right: 20px;
+        
     }
 
     .notification-container {
-        width: 50%;
+        width: 20%;
         justify-content: space-between;
-        align-items: flex-start;
+
     }
 }
