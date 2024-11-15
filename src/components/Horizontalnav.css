@@ -15,6 +15,7 @@
     box-shadow: 0 4px 8px rgba(255, 255, 255, 0.3);
     border-bottom: 1px solid #ddd;
     gap: 10px;
+    transition: all 0.3s;
 }
 
 /* Brand and Logo */
@@ -27,11 +28,10 @@
     cursor: pointer;
 }
 
-
-.logo-after-name
-{
-    height:40px;
+.logo-after-name {
+    height: 40px;
 }
+
 /* Center Section for Search and Notification */
 .center-section,
 .notification-container {
@@ -39,6 +39,7 @@
     align-items: center;
 }
 
+/* Search Container */
 .search-container {
     position: relative;
     margin-right: 50px;
@@ -53,7 +54,6 @@
     color: black;
     transition: width 0.3s;
 }
-
 
 /* Search Results */
 .search-results {
@@ -92,4 +92,54 @@
     padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .horizontal-nav {
+        flex-wrap: wrap;
+        /* height: auto; */
+        align-items: flex-start;
+        padding: 10px;
+    }
+
+    .brand-name {
+        font-size: 1.2em;
+    }
+
+    .search-container input {
+        width: 150px;
+        align-items: center;
+    }
+
+    .notification-container {
+        margin-top: 7px;
+    }
+}
+
+@media (max-width: 480px) {
+    .horizontal-nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .brand-name {
+        font-size: 1.2em;
+    }
+
+    .search-container input {
+        width: 100%;
+        align-items: flex-start;
+    }
+
+    .search-container {
+        width: 100%;
+    }
+
+    .notification-container {
+        width: 50%;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
 }
