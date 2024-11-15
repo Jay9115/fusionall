@@ -1,30 +1,113 @@
-/* body {
-    display: flex;
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    background-color: #f4f4f4;
+/* General Styles */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
     color: #333;
-} */
-
-.heading {
-    color: #007BFF;
 }
 
-.container1 {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+.homepage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.card {
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    background-color: white;
-    margin-bottom: 20px;
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: #004aad;
+    color: #fff;
+    width: 100%;
 }
 
-.highlight {
-    color: #d9534f;
+.logo {
+    font-size: 1.8rem;
     font-weight: bold;
+}
+
+.navbar a {
+    margin: 0 1rem;
+    color: #fff;
+    text-decoration: none;
+}
+
+.cta-button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #ff5722;
+    color: #fff;
+}
+
+/* Hero */
+.hero {
+    text-align: center;
+    padding: 2rem;
+    background: linear-gradient(to right, #004aad, #007bff);
+    color: #fff;
+    width: 100%;
+    margin-bottom: 60px;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+}
+
+.hero .subheading {
+    font-size: 1.2rem;
+    margin-top: 0.5rem;
+}
+
+/* About */
+.about {
+    text-align: center;
+    padding: 2rem 1rem;
+    max-width: 800px;
+    margin-bottom: 60px;
+}
+
+/* Features */
+.features-grid {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 2rem;
+}
+
+.feature {
+    flex: 1 1 200px;
+    margin: 1rem;
+    text-align: center;
+}
+
+.feature .icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+/* Contact */
+.contact {
+    text-align: center;
+    padding: 2rem 1rem;
+    width: 100%;
+    background: #f4f4f4;
+    margin-bottom: 60px;
+}
+
+.contact a {
+    text-decoration: none;
+    color: #004aad;
+    font-weight: bold;
+}
+
+/* Footer */
+.footer {
+    padding: 1rem;
+    text-align: center;
+    background: #004aad;
+    color: #fff;
+    
 }
