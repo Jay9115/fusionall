@@ -1,22 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { auth, firestore } from './firebase'; // Import Firebase setup
-import { collection, onSnapshot, query, orderBy, doc, deleteDoc } from 'firebase/firestore';
+import { firestore } from './firebase'; // Import Firebase setup
+import { collectionGroup, onSnapshot, query, orderBy, doc, deleteDoc } from 'firebase/firestore';
 
 function BlogList() {
     const [blogs, setBlogs] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [expandedBlogId, setExpandedBlogId] = useState(null); // State to track expanded blog
+    const [expandedBlogId, setExpandedBlogId] = useState(null);
 
     useEffect(() => {
-        const currentUser = auth.currentUser;
-
-        if (!currentUser) {
-            alert("Please log in to view your blogs.");
-            return;
-        }
-
-        const userBlogsRef = collection(firestore, 'Blogs', currentUser.uid, 'BlogEntries');
-        const q = query(userBlogsRef, orderBy('date', 'desc'));
+        // Fetch all blogs
+        const allBlogsRef = collectionGroup(firestore, 'BlogEntries');
+        const q = query(allBlogsRef, orderBy('date', 'desc'));
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const blogsData = snapshot.docs.map((doc) => ({
@@ -36,27 +30,20 @@ function BlogList() {
     };
 
     const handleDelete = async (blogId) => {
-        const currentUser = auth.currentUser;
-
-        if (!currentUser) {
-            alert("You must be logged in to delete blogs.");
-            return;
-        }
-
-        const blogRef = doc(firestore, 'Blogs', currentUser.uid, 'BlogEntries', blogId);
+        const blogRef = doc(firestore, 'BlogEntries', blogId);
 
         try {
             await deleteDoc(blogRef);
-            alert("Blog deleted successfully.");
+            alert('Blog deleted successfully.');
         } catch (error) {
-            console.error("Error deleting blog: ", error);
-            alert("Failed to delete the blog. Please try again.");
+            console.error('Error deleting blog: ', error);
+            alert('Failed to delete the blog. Please try again.');
         }
     };
 
     return (
         <div className="blog-list">
-            <h2>Posted Blogs</h2>
+            <h2>All Blogs</h2>
             {loading ? (
                 <p>Loading blogs...</p>
             ) : blogs.length === 0 ? (
@@ -89,6 +76,9 @@ function BlogList() {
                         {expandedBlogId === blog.id && (
                             <div>
                                 <p>{blog.content}</p>
+                                <p className="blog-author">
+                                    Author: {blog.authorId}
+                                </p>
                                 <p className="blog-date">
                                     Posted on: {new Date(blog.date?.seconds * 1000).toLocaleString()}
                                 </p>

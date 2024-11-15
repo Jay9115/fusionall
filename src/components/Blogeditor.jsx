@@ -1,11 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Blogeditor.css'; // Optional: for styling the editor
 import { auth, firestore } from './firebase'; // Import your Firebase setup
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, doc, getDoc } from 'firebase/firestore';
 
 const BlogEditor = ({ onCancel }) => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+    const [username, setUsername] = useState('');
+
+    useEffect(() => {
+        const fetchUsername = async () => {
+            const currentUser = auth.currentUser;
+            if (currentUser) {
+                try {
+                    const userDocRef = doc(firestore, 'users', currentUser.uid);
+                    const userDoc = await getDoc(userDocRef);
+                    if (userDoc.exists()) {
+                        setUsername(userDoc.data().username);
+                    } else {
+                        console.error("User document not found.");
+                    }
+                } catch (error) {
+                    console.error("Error fetching username:", error);
+                }
+            }
+        };
+
+        fetchUsername();
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -23,6 +45,7 @@ const BlogEditor = ({ onCancel }) => {
                     title,
                     content,
                     date: serverTimestamp(),
+                    authorId: username, // Save the username as authorId
                 });
                 alert("Blog saved successfully!");
                 setTitle('');
