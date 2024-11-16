@@ -1,4 +1,5 @@
 import React from 'react';
+import './AuthButtons.css';
 import { signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, firestore } from './firebase'; // Import from your firebase setup
@@ -51,11 +52,11 @@ function AuthButtons() {
     };
 
     return (
-        <div>
+        <div className="auth-buttons-container">
             {user ? (
-                <button className="sign-out" onClick={signOutUser}>Sign Out</button>
+                <button className="auth-btn auth-sign-out" onClick={signOutUser}>Sign Out</button>
             ) : (
-                <button className="sign-in" onClick={signInWithGoogle}>Sign in with Google</button>
+                <button className="auth-btn auth-sign-in" onClick={signInWithGoogle}>Sign in with Google</button>
             )}
         </div>
     );
