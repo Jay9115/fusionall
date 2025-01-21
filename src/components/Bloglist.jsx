@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { firestore } from './firebase';
 import { collectionGroup, onSnapshot, query, orderBy, doc, deleteDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
-
+import AdSenseAd from './AdSenseAd';
 function BlogList() {
     const [blogs, setBlogs] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -52,6 +52,7 @@ function BlogList() {
     return (
         <div className="blog-list">
             <h2>All Blogs</h2>
+            <AdSenseAd/>
             {loading ? (
                 <p>Loading blogs...</p>
             ) : blogs.length === 0 ? (
