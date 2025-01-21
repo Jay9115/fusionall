@@ -18,7 +18,7 @@ const Home = () => {
             {/* Hero Section */}
             <section className="hero">
                 <h1>Welcome to FusionAll</h1>
-                <p className="subheading">Connecting Students, Sharing Knowledge, Building Futures.</p>
+                <p className="subheading">Connecting Studentss, Sharing Knowledge, Building Futures.</p>
             </section>
 
            {/* About Section */}
