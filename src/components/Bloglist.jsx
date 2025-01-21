@@ -52,6 +52,7 @@ function BlogList() {
     return (
         <div className="blog-list">
             <h2>All Blogs</h2>
+            
             <AdSenseAd/>
             {loading ? (
                 <p>Loading blogs...</p>
