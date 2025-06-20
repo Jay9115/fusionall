@@ -73,7 +73,8 @@ const Home = () => {
             {/* Contact Section */}
             <section className="contact" id="contact">
                 <h2>Contact Us</h2>
-                <p>Email: <a href="mailto:fusionall@gmail.com">fusionall@gmail.com</a></p>
+                <p>Email: <a href="pateljay091105@gmail.com">pateljay091105@gmail.com</a></p>
+                <p> <a href="mir@gmail.com">mir@gmail.com</a></p>
             </section>
 
             {/* Footer */}

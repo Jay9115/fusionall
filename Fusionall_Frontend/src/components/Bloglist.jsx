@@ -33,7 +33,7 @@ function BlogList() {
 
     const handleDelete = async (blogId, blogPath) => {
         try {
-            const response = await fetch('http://localhost:5000/api/blogs', {
+            const response = await fetch('https://fusionall-bckend.onrender.com/api/blogs', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

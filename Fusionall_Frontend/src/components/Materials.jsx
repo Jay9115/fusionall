@@ -17,7 +17,7 @@ const Materials = () => {
         console.error("User is not logged in.");
         return;
       }
-      const res = await fetch(`http://localhost:5000/api/groups/user/${currentUser.uid}`);
+      const res = await fetch(`https://fusionall-bckend.onrender.com/api/groups/user/${currentUser.uid}`);
       if (res.ok) {
         setGroups(await res.json());
       }
@@ -51,7 +51,7 @@ const Materials = () => {
     setProgress(0);
 
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', `http://localhost:5000/api/materials/upload/${selectedGroup.id}`, true);
+    xhr.open('POST', `https://fusionall-bckend.onrender.com/api/materials/upload/${selectedGroup.id}`, true);
 
     xhr.upload.onprogress = (event) => {
       if (event.lengthComputable) {
@@ -81,7 +81,7 @@ const Materials = () => {
   // Fetch files for the selected group
   const fetchFiles = async (group) => {
     if (!group) return;
-    const res = await fetch(`http://localhost:5000/api/materials/list/${group.id}`);
+    const res = await fetch(`https://fusionall-bckend.onrender.com/api/materials/list/${group.id}`);
     if (res.ok) {
       setFileUrls(await res.json());
     }

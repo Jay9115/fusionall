@@ -9,7 +9,7 @@ function FriendRequests() {
     useEffect(() => {
         const fetchRequests = async () => {
             if (currentUser) {
-                const res = await fetch(`http://localhost:5000/api/friends/requests/${currentUser.uid}`);
+                const res = await fetch(`https://fusionall-bckend.onrender.com/api/friends/requests/${currentUser.uid}`);
                 if (res.ok) {
                     setRequests(await res.json());
                 }
@@ -20,7 +20,7 @@ function FriendRequests() {
 
     const acceptRequest = async (friendUid) => {
         if (!currentUser) return;
-        const response = await fetch('http://localhost:5000/api/friends/requests/accept', {
+        const response = await fetch('https://fusionall-bckend.onrender.com/api/friends/requests/accept', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

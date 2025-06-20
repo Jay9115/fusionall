@@ -7,7 +7,7 @@ function GroupList({ groups, setSelectedGroup }) {
             {groups.length > 0 ? (
                 groups.map(group => (
                     <div key={group.id} onClick={() => setSelectedGroup(group)}>
-                        <img src={group.avatarURL || 'https://via.placeholder.com/35'} alt="Group Avatar" />
+                        <img src={group.avatarURL || 'https://fusionall-bckend.onrender.com'} alt="Group Avatar" />
                         <p>{group.groupName}</p>
                     </div>
                 ))

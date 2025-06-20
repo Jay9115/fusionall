@@ -8,7 +8,7 @@ function GroupChat({ groupId }) {
 
     useEffect(() => {
         const fetchMessages = async () => {
-            const res = await fetch(`http://localhost:5000/api/groups/${groupId}/messages`);
+            const res = await fetch(`https://fusionall-bckend.onrender.com/api/groups/${groupId}/messages`);
             if (res.ok) {
                 setMessages(await res.json());
             }
@@ -20,7 +20,7 @@ function GroupChat({ groupId }) {
     const sendMessage = async (e) => {
         e.preventDefault();
         const { uid, photoURL } = auth.currentUser;
-        const response = await fetch(`http://localhost:5000/api/groups/${groupId}/messages`, {
+        const response = await fetch(`https://fusionall-bckend.onrender.com/api/groups/${groupId}/messages`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -32,7 +32,7 @@ function GroupChat({ groupId }) {
         if (response.ok) {
             setMessageInput('');
             // Re-fetch messages
-            const res = await fetch(`http://localhost:5000/api/groups/${groupId}/messages`);
+            const res = await fetch(`https://fusionall-bckend.onrender.com/api/groups/${groupId}/messages`);
             if (res.ok) setMessages(await res.json());
         }
         if (dummy.current) dummy.current.scrollIntoView({ behavior: 'smooth' });

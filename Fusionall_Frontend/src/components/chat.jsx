@@ -33,13 +33,13 @@ function FriendsList({ setSelectedFriend }) {
     const fetchFriends = async () => {
       const currentUser = auth.currentUser;
       if (currentUser) {
-        const res = await fetch(`http://localhost:5000/api/friends/${currentUser.uid}`);
+        const res = await fetch(`https://fusionall-bckend.onrender.com/api/friends/${currentUser.uid}`);
         if (res.ok) {
           const friendUids = await res.json();
           // Fetch friend details
           const friendDetails = await Promise.all(
             friendUids.map(async (uid) => {
-              const userRes = await fetch(`http://localhost:5000/api/auth/${uid}`);
+              const userRes = await fetch(`https://fusionall-bckend.onrender.com/api/auth/${uid}`);
               if (userRes.ok) return await userRes.json();
               return { uid, username: 'Unknown' };
             })

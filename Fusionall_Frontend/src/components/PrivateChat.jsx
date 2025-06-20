@@ -13,7 +13,7 @@ function PrivateChat({ friend, setSelectedFriend }) {
     // Fetch messages from backend
     useEffect(() => {
         const fetchMessages = async () => {
-            const res = await fetch(`http://localhost:5000/api/chat/messages/${currentUser.uid}/${friend.uid}`);
+            const res = await fetch(`https://fusionall-bckend.onrender.com/api/chat/messages/${currentUser.uid}/${friend.uid}`);
             if (res.ok) {
                 const data = await res.json();
                 setMessages(data);
@@ -30,7 +30,7 @@ function PrivateChat({ friend, setSelectedFriend }) {
         e.preventDefault();
         const { uid, photoURL } = currentUser;
 
-        const res = await fetch('http://localhost:5000/api/chat/messages', {
+        const res = await fetch('https://fusionall-bckend.onrender.com/api/chat/messages', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -43,7 +43,7 @@ function PrivateChat({ friend, setSelectedFriend }) {
         if (res.ok) {
             setFormValue('');
             // Re-fetch messages
-            const updated = await fetch(`http://localhost:5000/api/chat/messages/${currentUser.uid}/${friend.uid}`);
+            const updated = await fetch(`https://fusionall-bckend.onrender.com/api/chat/messages/${currentUser.uid}/${friend.uid}`);
             if (updated.ok) setMessages(await updated.json());
             setTimeout(() => {
                 if (dummy.current) dummy.current.scrollIntoView({ behavior: 'smooth' });
@@ -63,7 +63,7 @@ function PrivateChat({ friend, setSelectedFriend }) {
     };
 
     const handleDeleteSelected = async () => {
-        await fetch('http://localhost:5000/api/chat/messages', {
+        await fetch('https://fusionall-bckend.onrender.com/api/chat/messages', {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -73,7 +73,7 @@ function PrivateChat({ friend, setSelectedFriend }) {
             }),
         });
         // Re-fetch messages
-        const updated = await fetch(`http://localhost:5000/api/chat/messages/${currentUser.uid}/${friend.uid}`);
+        const updated = await fetch(`https://fusionall-bckend.onrender.com/api/chat/messages/${currentUser.uid}/${friend.uid}`);
         if (updated.ok) setMessages(await updated.json());
         setSelectedMessages([]);
         setSelectMode(false);

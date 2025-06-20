@@ -28,7 +28,7 @@ const HorizontalNav = () => {
 
         if (searchValue && currentUser) {
             const res = await fetch(
-                `http://localhost:5000/api/auth/search?username=${encodeURIComponent(searchValue)}&excludeUid=${currentUser.uid}`
+                `https://fusionall-bckend.onrender.com/api/auth/search?username=${encodeURIComponent(searchValue)}&excludeUid=${currentUser.uid}`
             );
             if (res.ok) {
                 const results = await res.json();
@@ -41,7 +41,7 @@ const HorizontalNav = () => {
 
     const sendFriendRequest = async (friendUid) => {
         if (!currentUser) return;
-        const response = await fetch('http://localhost:5000/api/friends/requests/send', {
+        const response = await fetch('https://fusionall-bckend.onrender.com/api/friends/requests/send', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
