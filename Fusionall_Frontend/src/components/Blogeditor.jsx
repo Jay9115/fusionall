@@ -12,7 +12,7 @@ const BlogEditor = ({ onCancel }) => {
             const currentUser = auth.currentUser;
             if (currentUser) {
                 try {
-                    const res = await fetch(`http://localhost:5000/api/auth/${currentUser.uid}`);
+                    const res = await fetch(`https://fusionall-bckend.onrender.com/api/auth/${currentUser.uid}`);
                     if (res.ok) {
                         const userData = await res.json();
                         setUsername(userData.username);

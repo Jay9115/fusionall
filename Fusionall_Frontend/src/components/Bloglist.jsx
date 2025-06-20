@@ -12,7 +12,7 @@ function BlogList() {
         const fetchBlogs = async () => {
             setLoading(true);
             try {
-                const res = await fetch('http://localhost:5000/api/blogs');
+                const res = await fetch('https://fusionall-bckend.onrender.com/api/blogs');
                 const data = await res.json();
                 setBlogs(data);
             } catch (error) {

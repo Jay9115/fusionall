@@ -15,7 +15,7 @@ function Group() {
         const fetchGroups = async () => {
             const currentUser = auth.currentUser;
             if (currentUser) {
-                const res = await fetch(`http://localhost:5000/api/groups/user/${currentUser.uid}`);
+                const res = await fetch(`https://fusionall-bckend.onrender.com/api/groups/user/${currentUser.uid}`);
                 if (res.ok) {
                     setGroups(await res.json());
                 }
