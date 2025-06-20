@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import './Blogeditor.css'; // Optional: for styling the editor
-import { auth, firestore } from './firebase'; // Import your Firebase setup
-import { collection, addDoc, serverTimestamp, doc, getDoc } from 'firebase/firestore';
+import './Blogeditor.css';
+import { auth } from './firebase';
 
 const BlogEditor = ({ onCancel }) => {
     const [title, setTitle] = useState('');
@@ -13,43 +12,47 @@ const BlogEditor = ({ onCancel }) => {
             const currentUser = auth.currentUser;
             if (currentUser) {
                 try {
-                    const userDocRef = doc(firestore, 'users', currentUser.uid);
-                    const userDoc = await getDoc(userDocRef);
-                    if (userDoc.exists()) {
-                        setUsername(userDoc.data().username);
-                    } else {
-                        console.error("User document not found.");
+                    const res = await fetch(`http://localhost:5000/api/auth/${currentUser.uid}`);
+                    if (res.ok) {
+                        const userData = await res.json();
+                        setUsername(userData.username);
                     }
                 } catch (error) {
                     console.error("Error fetching username:", error);
                 }
             }
         };
-
         fetchUsername();
     }, []);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const currentUser = auth.currentUser;
-    
+
         if (!currentUser) {
             alert("Please log in to save your blog.");
             return;
         }
-    
+
         if (title && content) {
             try {
-                const userBlogsRef = collection(firestore, 'Blogs', currentUser.uid, 'BlogEntries');
-                await addDoc(userBlogsRef, {
-                    title,
-                    content,
-                    date: serverTimestamp(),
-                    authorId: currentUser.uid, // Save the UID as authorId
-                    authorName: username,      // Save the username for display purposes
+                const response = await fetch('http://localhost:5000/api/blogs', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        title,
+                        content,
+                        authorId: currentUser.uid,
+                        authorName: username,
+                    }),
                 });
-                alert("Blog saved successfully!");
-                setTitle(''); // Clear the title
-                setContent(''); // Clear the content
+                if (response.ok) {
+                    alert("Blog saved successfully!");
+                    setTitle('');
+                    setContent('');
+                } else {
+                    alert("Failed to save the blog. Please try again.");
+                }
             } catch (error) {
                 console.error("Error saving blog:", error);
                 alert("Failed to save the blog. Please try again.");
@@ -58,7 +61,7 @@ const BlogEditor = ({ onCancel }) => {
             alert("Both title and content are required.");
         }
     };
-    
+
     return (
         <div className="blog-editor">
             <h2>Write a New Blog</h2>

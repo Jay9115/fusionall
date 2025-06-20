@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { collection, query, orderBy, onSnapshot, addDoc, serverTimestamp } from 'firebase/firestore';
-import { firestore, auth } from './firebase';
+import { auth } from './firebase';
 
 function GroupChat({ groupId }) {
     const [messages, setMessages] = useState([]);
@@ -8,30 +7,35 @@ function GroupChat({ groupId }) {
     const dummy = useRef();
 
     useEffect(() => {
-        const messagesRef = collection(firestore, 'groups', groupId, 'messages');
-        const q = query(messagesRef, orderBy('timestamp'));
-
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-            const messagesData = snapshot.docs.map(doc => doc.data());
-            setMessages(messagesData);
-        });
-
-        return () => unsubscribe();
+        const fetchMessages = async () => {
+            const res = await fetch(`http://localhost:5000/api/groups/${groupId}/messages`);
+            if (res.ok) {
+                setMessages(await res.json());
+            }
+        };
+        fetchMessages();
+        // Optionally, set up polling or websockets for real-time updates
     }, [groupId]);
 
     const sendMessage = async (e) => {
         e.preventDefault();
-
         const { uid, photoURL } = auth.currentUser;
-        await addDoc(collection(firestore, 'groups', groupId, 'messages'), {
-            text: messageInput,
-            timestamp: serverTimestamp(),
-            sender: uid,
-            photoURL,
+        const response = await fetch(`http://localhost:5000/api/groups/${groupId}/messages`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                text: messageInput,
+                sender: uid,
+                photoURL
+            })
         });
-
-        setMessageInput('');
-        dummy.current.scrollIntoView({ behavior: 'smooth' });
+        if (response.ok) {
+            setMessageInput('');
+            // Re-fetch messages
+            const res = await fetch(`http://localhost:5000/api/groups/${groupId}/messages`);
+            if (res.ok) setMessages(await res.json());
+        }
+        if (dummy.current) dummy.current.scrollIntoView({ behavior: 'smooth' });
     };
 
     return (
@@ -45,7 +49,6 @@ function GroupChat({ groupId }) {
                 ))}
                 <span ref={dummy}></span>
             </div>
-
             <form onSubmit={sendMessage}>
                 <input
                     value={messageInput}

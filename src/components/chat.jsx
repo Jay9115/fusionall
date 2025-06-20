@@ -1,9 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react';
 import './chat.css';
-import { collection, addDoc, orderBy, query, onSnapshot, serverTimestamp, doc, getDoc, deleteDoc } from 'firebase/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth, firestore } from './firebase';
+import { auth } from './firebase';
 import AuthButtons from "./AuthButtons";
+import PrivateChat from "./PrivateChat";
 
 function Chat() {
   const [user] = useAuthState(auth);
@@ -33,18 +33,21 @@ function FriendsList({ setSelectedFriend }) {
     const fetchFriends = async () => {
       const currentUser = auth.currentUser;
       if (currentUser) {
-        const userDocRef = doc(firestore, 'users', currentUser.uid);
-        const userSnapshot = await getDoc(userDocRef);
-
-        if (userSnapshot.exists()) {
-          const userData = userSnapshot.data();
-          if (userData.friends) {
-            setFriends(userData.friends);
-          }
+        const res = await fetch(`http://localhost:5000/api/friends/${currentUser.uid}`);
+        if (res.ok) {
+          const friendUids = await res.json();
+          // Fetch friend details
+          const friendDetails = await Promise.all(
+            friendUids.map(async (uid) => {
+              const userRes = await fetch(`http://localhost:5000/api/auth/${uid}`);
+              if (userRes.ok) return await userRes.json();
+              return { uid, username: 'Unknown' };
+            })
+          );
+          setFriends(friendDetails);
         }
       }
     };
-
     fetchFriends();
   }, []);
 
@@ -52,8 +55,8 @@ function FriendsList({ setSelectedFriend }) {
     <div className="friends-list">
       <h3>Your Friends</h3>
       {friends.length > 0 ? (
-        friends.map((friendUid) => (
-          <FriendItem key={friendUid} friendUid={friendUid} setSelectedFriend={setSelectedFriend} />
+        friends.map((friend) => (
+          <FriendItem key={friend.uid} friend={friend} setSelectedFriend={setSelectedFriend} />
         ))
       ) : (
         <p>No friends yet. Add some!</p>
@@ -62,153 +65,15 @@ function FriendsList({ setSelectedFriend }) {
   );
 }
 
-function FriendItem({ friendUid, setSelectedFriend }) {
-  const [friendData, setFriendData] = useState(null);
-
-  useEffect(() => {
-    const fetchFriendData = async () => {
-      const friendDocRef = doc(firestore, 'users', friendUid);
-      const friendSnapshot = await getDoc(friendDocRef);
-      setFriendData(friendSnapshot.data());
-    };
-
-    fetchFriendData();
-  }, [friendUid]);
-
+function FriendItem({ friend, setSelectedFriend }) {
   return (
-    <div className="friend-item" onClick={() => setSelectedFriend(friendData)}>
+    <div className="friend-item" onClick={() => setSelectedFriend(friend)}>
       <img
-        src={friendData?.photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'}
-        alt={`${friendData?.username}'s avatar`}
+        src={friend.photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'}
+        alt={`${friend.username}'s avatar`}
         className="friend-avatar"
       />
-      <p>{friendData?.username || 'Loading...'}</p>
-    </div>
-  );
-}
-
-function PrivateChat({ friend, setSelectedFriend }) {
-  const currentUser = auth.currentUser;
-  const dummy = useRef();
-  const [formValue, setFormValue] = useState('');
-  const [messages, setMessages] = useState([]);
-  const [selectMode, setSelectMode] = useState(false);
-  const [selectedMessages, setSelectedMessages] = useState([]);
-  const chatId = [currentUser.uid, friend.uid].sort().join('_');
-
-  useEffect(() => {
-    const messagesRef = collection(firestore, 'chats', chatId, 'messages');
-    const q = query(messagesRef, orderBy('timestamp'));
-
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const messagesData = [];
-      querySnapshot.forEach((doc) => {
-        messagesData.push({ id: doc.id, ...doc.data() });
-      });
-      setMessages(messagesData);
-      dummy.current.scrollIntoView({ behavior: 'smooth' });
-    });
-
-    return () => unsubscribe();
-  }, [chatId]);
-
-  const sendMessage = async (e) => {
-    e.preventDefault();
-
-    const { uid, photoURL } = currentUser;
-
-    await addDoc(collection(firestore, 'chats', chatId, 'messages'), {
-      text: formValue,
-      timestamp: serverTimestamp(),
-      sender: uid,
-      photoURL,
-    });
-
-    setFormValue('');
-    dummy.current.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const toggleSelectMode = () => {
-    setSelectMode(!selectMode);
-    setSelectedMessages([]);
-  };
-
-  const toggleSelectMessage = (id) => {
-    setSelectedMessages((prev) =>
-      prev.includes(id) ? prev.filter((msgId) => msgId !== id) : [...prev, id]
-    );
-  };
-
-  const handleDeleteSelected = async () => {
-    for (const messageId of selectedMessages) {
-      await deleteDoc(doc(firestore, 'chats', chatId, 'messages', messageId));
-    }
-    setSelectedMessages([]);
-    setSelectMode(false);
-  };
-
-  return (
-    <>
-      <header>
-        <h3>Chat with {friend.username}</h3>
-        
-        <div className="options">
-        <button className="back-buttons" onClick={() => setSelectedFriend(null)}>Back</button>
-          <button className="back-buttons" onClick={toggleSelectMode}>⋮</button>
-          {selectMode && (
-            <div className="dropdown">
-              <button onClick={handleDeleteSelected} disabled={selectedMessages.length === 0}>
-                Delete 
-              </button>
-              <button onClick={toggleSelectMode}>Cancel</button>
-            </div>
-          )}
-        </div>
-      </header>
-      
-      <main>
-       
-      
-        
-        {messages && messages.map((msg) => (
-          <ChatMessage
-            key={msg.id}
-            message={msg}
-            chatId={chatId}
-            selectMode={selectMode}
-            selected={selectedMessages.includes(msg.id)}
-            onSelect={() => toggleSelectMessage(msg.id)}
-          />
-        ))}
-        
-        <span ref={dummy}></span>
-      </main>
-
-      <form onSubmit={sendMessage}>
-        <input
-          value={formValue}
-          onChange={(e) => setFormValue(e.target.value)}
-          placeholder="Type a message"
-        />
-        <button type="submit" disabled={!formValue}>
-          Send
-        </button>
-      </form>
-    </>
-  );
-}
-
-function ChatMessage({ message, selectMode, selected, onSelect }) {
-  const { text, sender, photoURL } = message;
-  const messageClass = sender === auth.currentUser.uid ? 'sent' : 'received';
-
-  return (
-    <div className={`message ${messageClass} ${selected ? 'selected' : ''}`} onClick={selectMode ? onSelect : null}>
-      <img src={photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'} alt="Avatar" />
-      <p>{text}</p>
-      {selectMode && (
-        <input type="checkbox" checked={selected} readOnly />
-      )}
+      <p>{friend.username || 'Loading...'}</p>
     </div>
   );
 }

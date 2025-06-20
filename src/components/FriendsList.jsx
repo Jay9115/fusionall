@@ -1,47 +1,49 @@
 import React, { useEffect, useState } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
-import { auth, firestore } from './firebase'; // Import your firebase setup
+import { auth } from './firebase';
 
-function FriendsList({ selectedFriends, setSelectedFriends }) {
+function FriendsList({ selectedFriends = [], setSelectedFriends }) {
     const [friends, setFriends] = useState([]);
 
     useEffect(() => {
         const fetchFriends = async () => {
             const currentUser = auth.currentUser;
             if (currentUser) {
-                const userDocRef = doc(firestore, 'users', currentUser.uid);
-                const userSnapshot = await getDoc(userDocRef);
-
-                if (userSnapshot.exists()) {
-                    const userData = userSnapshot.data();
-                    if (userData.friends) {
-                        setFriends(userData.friends);
-                    }
+                const res = await fetch(`http://localhost:5000/api/friends/${currentUser.uid}`);
+                if (res.ok) {
+                    const friendUids = await res.json();
+                    // Fetch friend details
+                    const friendDetails = await Promise.all(
+                        friendUids.map(async (uid) => {
+                            const userRes = await fetch(`http://localhost:5000/api/auth/${uid}`);
+                            if (userRes.ok) return await userRes.json();
+                            return { uid, username: 'Unknown' };
+                        })
+                    );
+                    setFriends(friendDetails);
                 }
             }
         };
-
         fetchFriends();
     }, []);
 
     const toggleFriendSelection = (friendUid) => {
+        if (!setSelectedFriends) return;
         if (selectedFriends.includes(friendUid)) {
             setSelectedFriends(selectedFriends.filter((uid) => uid !== friendUid));
         } else {
             setSelectedFriends([...selectedFriends, friendUid]);
         }
-        
     };
 
     return (
         <div className="friends-list">
             <h3>Select Friends for Group</h3>
             {friends.length > 0 ? (
-                friends.map((friendUid) => (
+                friends.map((friend) => (
                     <FriendItem
-                        key={friendUid}
-                        friendUid={friendUid}
-                        isSelected={selectedFriends.includes(friendUid)}
+                        key={friend.uid}
+                        friend={friend}
+                        isSelected={selectedFriends.includes(friend.uid)}
                         toggleFriendSelection={toggleFriendSelection}
                     />
                 ))
@@ -52,25 +54,13 @@ function FriendsList({ selectedFriends, setSelectedFriends }) {
     );
 }
 
-function FriendItem({ friendUid, isSelected, toggleFriendSelection }) {
-    const [friendData, setFriendData] = useState(null);
-
-    useEffect(() => {
-        const fetchFriendData = async () => {
-            const friendDocRef = doc(firestore, 'users', friendUid);
-            const friendSnapshot = await getDoc(friendDocRef);
-            setFriendData(friendSnapshot.data());
-        };
-
-        fetchFriendData();
-    }, [friendUid]);
-
+function FriendItem({ friend, isSelected, toggleFriendSelection }) {
     return (
         <div
             className={`friend-item ${isSelected ? 'selected' : ''}`}
-            onClick={() => toggleFriendSelection(friendUid)}
+            onClick={() => toggleFriendSelection(friend.uid)}
         >
-            <p>{friendData?.username || 'Loading...'}</p>
+            <p>{friend.username || 'Loading...'}</p>
         </div>
     );
 }

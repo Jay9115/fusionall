@@ -9,6 +9,7 @@ import BlogList from "./components/Bloglist";
 import BlogEditor from "./components/Blogeditor";
 import Home from './components/Home';
 import Materials from "./components/Materials";
+import { auth } from "./components/firebase";
 
 function App() {
     const [activeSection, setActiveSection] = useState("Home");
@@ -20,9 +21,32 @@ function App() {
         setIsWriting(false); // Close editor when navigating away
     };
 
-    const addBlog = (newBlog) => {
-        setBlogs([newBlog, ...blogs]);
-        setIsWriting(false); // Close editor after saving
+    const addBlog = async (newBlog) => {
+        const currentUser = auth.currentUser;
+        if (!currentUser) {
+            alert("Please log in to save your blog.");
+            return;
+        }
+        try {
+            const response = await fetch('http://localhost:5000/api/blogs', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    ...newBlog,
+                    authorId: currentUser.uid,
+                    authorName: currentUser.displayName // or fetch from backend if needed
+                }),
+            });
+            if (response.ok) {
+                setBlogs([newBlog, ...blogs]);
+                setIsWriting(false);
+            } else {
+                alert("Failed to save the blog. Please try again.");
+            }
+        } catch (error) {
+            alert("Failed to save the blog. Please try again.");
+        }
+    
     };
 
     return (

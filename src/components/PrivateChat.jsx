@@ -1,63 +1,114 @@
-// PrivateChat.js
 import React, { useRef, useState, useEffect } from 'react';
-import { collection, addDoc, orderBy, query, serverTimestamp, onSnapshot } from 'firebase/firestore';
-import { auth, firestore } from './firebase';
-import ChatMessage from './ChatMessage';
+import { auth } from './firebase';
 
 function PrivateChat({ friend, setSelectedFriend }) {
     const currentUser = auth.currentUser;
     const dummy = useRef();
     const [formValue, setFormValue] = useState('');
     const [messages, setMessages] = useState([]);
+    const [selectMode, setSelectMode] = useState(false);
+    const [selectedMessages, setSelectedMessages] = useState([]);
     const chatId = [currentUser.uid, friend.uid].sort().join('_');
 
+    // Fetch messages from backend
     useEffect(() => {
-        const messagesRef = collection(firestore, 'chats', chatId, 'messages');
-        const q = query(messagesRef, orderBy('timestamp'));
-
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            const messagesData = [];
-            querySnapshot.forEach((doc) => {
-                messagesData.push({ ...doc.data(), id: doc.id });
-            });
-            setMessages(messagesData);
-            dummy.current.scrollIntoView({ behavior: 'smooth' });
-        });
-
-        return () => unsubscribe();
+        const fetchMessages = async () => {
+            const res = await fetch(`http://localhost:5000/api/chat/messages/${currentUser.uid}/${friend.uid}`);
+            if (res.ok) {
+                const data = await res.json();
+                setMessages(data);
+                setTimeout(() => {
+                    if (dummy.current) dummy.current.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            }
+        };
+        fetchMessages();
+        // Optionally, set up polling or websockets for real-time updates
     }, [chatId]);
 
     const sendMessage = async (e) => {
         e.preventDefault();
         const { uid, photoURL } = currentUser;
 
-        await addDoc(collection(firestore, 'chats', chatId, 'messages'), {
-            text: formValue,
-            timestamp: serverTimestamp(),
-            sender: uid,
-            photoURL,
+        const res = await fetch('http://localhost:5000/api/chat/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                senderUid: uid,
+                receiverUid: friend.uid,
+                text: formValue,
+                photoURL,
+            }),
         });
+        if (res.ok) {
+            setFormValue('');
+            // Re-fetch messages
+            const updated = await fetch(`http://localhost:5000/api/chat/messages/${currentUser.uid}/${friend.uid}`);
+            if (updated.ok) setMessages(await updated.json());
+            setTimeout(() => {
+                if (dummy.current) dummy.current.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+    };
 
-        setFormValue('');
-        dummy.current.scrollIntoView({ behavior: 'smooth' });
+    const toggleSelectMode = () => {
+        setSelectMode(!selectMode);
+        setSelectedMessages([]);
+    };
+
+    const toggleSelectMessage = (id) => {
+        setSelectedMessages((prev) =>
+            prev.includes(id) ? prev.filter((msgId) => msgId !== id) : [...prev, id]
+        );
+    };
+
+    const handleDeleteSelected = async () => {
+        await fetch('http://localhost:5000/api/chat/messages', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                uid1: currentUser.uid,
+                uid2: friend.uid,
+                messageIds: selectedMessages,
+            }),
+        });
+        // Re-fetch messages
+        const updated = await fetch(`http://localhost:5000/api/chat/messages/${currentUser.uid}/${friend.uid}`);
+        if (updated.ok) setMessages(await updated.json());
+        setSelectedMessages([]);
+        setSelectMode(false);
     };
 
     return (
         <>
             <header>
-                <button className="back-button" onClick={() => setSelectedFriend(null)}>
-                    ←
-                </button>
                 <h3>Chat with {friend.username}</h3>
+                <div className="options">
+                    <button className="back-buttons" onClick={() => setSelectedFriend(null)}>Back</button>
+                    <button className="back-buttons" onClick={toggleSelectMode}>⋮</button>
+                    {selectMode && (
+                        <div className="dropdown">
+                            <button onClick={handleDeleteSelected} disabled={selectedMessages.length === 0}>
+                                Delete
+                            </button>
+                            <button onClick={toggleSelectMode}>Cancel</button>
+                        </div>
+                    )}
+                </div>
             </header>
-            
             <main>
                 {messages && messages.map((msg) => (
-                    <ChatMessage key={msg.id} message={msg} chatId={chatId} />
+                    <ChatMessage
+                        key={msg.id}
+                        message={msg}
+                        chatId={chatId}
+                        selectMode={selectMode}
+                        selected={selectedMessages.includes(msg.id)}
+                        onSelect={() => toggleSelectMessage(msg.id)}
+                    />
                 ))}
                 <span ref={dummy}></span>
             </main>
-
             <form onSubmit={sendMessage}>
                 <input
                     value={formValue}
@@ -69,6 +120,21 @@ function PrivateChat({ friend, setSelectedFriend }) {
                 </button>
             </form>
         </>
+    );
+}
+
+function ChatMessage({ message, selectMode, selected, onSelect }) {
+    const { text, sender, photoURL } = message;
+    const messageClass = sender === auth.currentUser.uid ? 'sent' : 'received';
+
+    return (
+        <div className={`message ${messageClass} ${selected ? 'selected' : ''}`} onClick={selectMode ? onSelect : null}>
+            <img src={photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'} alt="Avatar" />
+            <p>{text}</p>
+            {selectMode && (
+                <input type="checkbox" checked={selected} readOnly />
+            )}
+        </div>
     );
 }
 

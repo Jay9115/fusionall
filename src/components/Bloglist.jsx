@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { firestore } from './firebase';
-import { collectionGroup, onSnapshot, query, orderBy, doc, deleteDoc } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
-import AdSenseAd from './AdSenseAd';
+import { auth } from './firebase';
+
+
 function BlogList() {
     const [blogs, setBlogs] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -10,28 +9,22 @@ function BlogList() {
     const [currentUserId, setCurrentUserId] = useState(null);
 
     useEffect(() => {
-        // Get current user ID
-        const auth = getAuth();
-        const user = auth.currentUser;
-        if (user) {
-            setCurrentUserId(user.uid);
-        }
-
-        // Fetch all blogs
-        const allBlogsRef = collectionGroup(firestore, 'BlogEntries');
-        const q = query(allBlogsRef, orderBy('date', 'desc'));
-
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-            const blogsData = snapshot.docs.map((doc) => ({
-                id: doc.id,
-                path: doc.ref.path, // Include full path
-                ...doc.data(),
-            }));
-            setBlogs(blogsData);
+        const fetchBlogs = async () => {
+            setLoading(true);
+            try {
+                const res = await fetch('http://localhost:5000/api/blogs');
+                const data = await res.json();
+                setBlogs(data);
+            } catch (error) {
+                setBlogs([]);
+            }
             setLoading(false);
-        });
+        };
 
-        return () => unsubscribe();
+        const user = auth.currentUser;
+        if (user) setCurrentUserId(user.uid);
+
+        fetchBlogs();
     }, []);
 
     const handleToggle = (blogId) => {
@@ -40,11 +33,22 @@ function BlogList() {
 
     const handleDelete = async (blogId, blogPath) => {
         try {
-            const blogRef = doc(firestore, blogPath); // Use the provided path
-            await deleteDoc(blogRef);
-            alert('Blog deleted successfully.');
+            const response = await fetch('http://localhost:5000/api/blogs', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    blogPath,
+                    authorId: currentUserId,
+                    blogId
+                }),
+            });
+            if (response.ok) {
+                setBlogs(blogs.filter(blog => blog.id !== blogId));
+                alert('Blog deleted successfully.');
+            } else {
+                alert('Failed to delete the blog. Please try again.');
+            }
         } catch (error) {
-            console.error('Error deleting blog: ', error);
             alert('Failed to delete the blog. Please try again.');
         }
     };
@@ -53,7 +57,6 @@ function BlogList() {
         <div className="blog-list">
             <h2>All Blogs</h2>
             
-            <AdSenseAd/>
             {loading ? (
                 <p>Loading blogs...</p>
             ) : blogs.length === 0 ? (
@@ -78,7 +81,7 @@ function BlogList() {
                                 margin: '0 0 5px 0',
                                 color: expandedBlogId === blog.id ? '#333' : '#007BFF',
                                 textDecoration: expandedBlogId === blog.id ? 'none' : 'underline',
-                                fontSize: '1.2em', // Increased font size for the title
+                                fontSize: '1.2em',
                             }}
                             onClick={() => handleToggle(blog.id)}
                         >
@@ -91,7 +94,7 @@ function BlogList() {
                                     style={{
                                         margin: '5px 0',
                                         fontWeight: 'bold',
-                                        fontSize: '0.8em', // Decreased font size for author
+                                        fontSize: '0.8em',
                                     }}
                                 >
                                     Author: {blog.authorName || 'Unknown'}
@@ -101,7 +104,7 @@ function BlogList() {
                                     className="blog-date"
                                     style={{ fontSize: '0.8em', color: '#555', marginTop: '10px' }}
                                 >
-                                    Posted on: {new Date(blog.date?.seconds * 1000).toLocaleString()}
+                                    Posted on: {blog.date ? new Date(blog.date.seconds ? blog.date.seconds * 1000 : blog.date).toLocaleString() : ''}
                                 </p>
                                 {currentUserId === blog.authorId && (
                                     <button
