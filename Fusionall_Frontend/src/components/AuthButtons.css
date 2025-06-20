@@ -1,0 +1,49 @@
+/* AuthButtons.css */
+
+/* Unique container for the buttons */
+.auth-buttons-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+/* Common styles for all buttons */
+.auth-btn {
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Specific styles for sign-in button */
+.auth-sign-in {
+    background-color: #007bff; /* Primary blue */
+    color: #fff;
+}
+
+.auth-sign-in:hover {
+    background-color: #0056b3; /* Darker blue for hover */
+    transform: scale(1.05);
+}
+
+/* Specific styles for sign-out button */
+.auth-sign-out {
+    background-color: #dc3545; /* Red for sign-out */
+    color: #fff;
+}
+
+.auth-sign-out:hover {
+    background-color: #b52a37; /* Darker red for hover */
+    transform: scale(1.05);
+}
+
+/* Focus outline for accessibility */
+.auth-btn:focus {
+    outline: 2px solid #0056b3;
+    outline-offset: 2px;
+}

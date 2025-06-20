@@ -1,0 +1,320 @@
+:root {
+  --chat-header-bg: linear-gradient(90deg, #0a78ffba 70%, #1976d2 100%);
+  --chat-header-bg-dark: linear-gradient(90deg, #23272f 70%, #22304a 100%);
+  --chat-friend-bg: linear-gradient(90deg, #1565c0 60%, #1976d2 100%);
+  --chat-friend-bg-dark: linear-gradient(90deg, #22304a 60%, #2a3b5d 100%);
+  --chat-main-bg: #f9fafd;
+  --chat-main-bg-dark: #181a20;
+  --chat-message-bg: linear-gradient(90deg, #1976d2 60%, #1565c0 100%);
+  --chat-message-bg-dark: linear-gradient(90deg, #22304a 60%, #2a3b5d 100%);
+  --chat-message-received-bg: #f1f1f1;
+  --chat-message-received-bg-dark: #23272f;
+  --chat-message-text: #fff;
+  --chat-message-text-dark: #e3e3e3;
+  --chat-input-bg: #2a2a2a;
+  --chat-input-bg-dark: #23272f;
+  --chat-input-text: #fff;
+  --chat-input-text-dark: #e3e3e3;
+}
+
+body.dark header,
+:root.dark header {
+  background: var(--chat-header-bg-dark);
+  color: #e3e3e3;
+}
+body.dark .friend-item,
+:root.dark .friend-item {
+  background: var(--chat-friend-bg-dark);
+  color: #e3e3e3;
+}
+body.dark main,
+:root.dark main {
+  background: var(--chat-main-bg-dark);
+}
+body.dark .sent,
+:root.dark .sent {
+  background: var(--chat-message-bg-dark);
+  color: var(--chat-message-text-dark);
+}
+body.dark .received,
+:root.dark .received {
+  background: var(--chat-message-received-bg-dark);
+  color: var(--chat-message-text-dark);
+}
+body.dark form,
+:root.dark form {
+  background: #23272f;
+}
+body.dark form input,
+:root.dark form input {
+  background: var(--chat-input-bg-dark);
+  color: var(--chat-input-text-dark);
+}
+body.dark form button,
+:root.dark form button {
+  background: var(--chat-message-bg-dark);
+}
+body.dark .dropdown,
+:root.dark .dropdown {
+  background: #23272f;
+  color: #e3e3e3;
+}
+
+/* General Styling */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Header Styling */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--chat-header-bg);
+  padding: 14px 18px;
+  color: #ffffff;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 2px 12px rgba(21, 101, 192, 0.07);
+}
+
+/* Back Button Styling */
+.back-buttons, .back-button {
+  background: var(--chat-header-bg);
+  color: #ffffff;
+  padding: 10px 18px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.13);
+  transition: background 0.2s, box-shadow 0.2s;
+  margin-right: 8px;
+}
+
+.back-buttons:hover, .back-button:hover {
+  background: #1565c0;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+}
+
+/* Friends List */
+.friends-list {
+  background-color: #f0f4fa;
+  padding: 22px;
+  border-radius: 12px;
+  box-shadow: 0 5px 18px rgba(21, 101, 192, 0.09);
+  margin-bottom: 18px;
+}
+
+.friends-list h3 {
+  margin-bottom: 15px;
+  color: #1565c0;
+  font-weight: 700;
+}
+
+.friend-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  margin: 10px 0;
+  background: var(--chat-friend-bg);
+  color: #f0f0ff;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.18s, box-shadow 0.18s, background 0.3s, color 0.3s;
+}
+
+.friend-item:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 2px 10px rgba(21, 101, 192, 0.13);
+}
+
+.friend-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  margin-right: 12px;
+  border: 2px solid #fff;
+}
+
+/* Chat Area */
+main {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  height: 65vh;
+  margin-top: 18px;
+  overflow-y: auto;
+  background: var(--chat-main-bg);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(21, 101, 192, 0.07);
+  transition: background 0.3s;
+}
+
+main::-webkit-scrollbar {
+  width: 0.25rem;
+}
+
+main::-webkit-scrollbar-thumb {
+  background-color: #1565c0;
+  border-radius: 8px;
+}
+
+/* Form Styling */
+form {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: #181717;
+  padding: 12px;
+  border-radius: 0 0 12px 12px;
+  margin-top: 10px;
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  background: #181717;
+  transition: background 0.3s;
+}
+form input {
+  flex: 1;
+  font-size: 1rem;
+  padding: 12px;
+  margin-right: 8px;
+  border: none;
+  border-radius: 8px;
+  background: var(--chat-input-bg);
+  color: var(--chat-input-text);
+  transition: background 0.2s, color 0.3s;
+}
+
+form input:focus {
+  background: #3a3a3a;
+  outline: none;
+}
+
+form button {
+  background: var(--chat-message-bg);
+  color: #ffffff;
+  padding: 10px 18px;
+  border: none;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+form button:hover {
+  background: #0a78ffba;
+}
+
+/* Message Styling */
+.message {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 15px;
+  max-width: 70%;
+  box-shadow: 0 2px 8px rgba(21, 101, 192, 0.07);
+}
+
+.sent {
+  align-self: flex-end;
+  background: var(--chat-message-bg);
+  color: var(--chat-message-text);
+  transition: background 0.3s, color 0.3s;
+}
+
+.received {
+  align-self: flex-start;
+  background: var(--chat-message-received-bg);
+  color: #333;
+  transition: background 0.3s, color 0.3s;
+}
+
+body.dark .received,
+:root.dark .received {
+  color: var(--chat-message-text-dark);
+}
+
+.selected {
+  outline: 2px solid #ff4d4d;
+}
+
+/* Chat Options */
+.options {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+/* Dropdown Menu */
+.dropdown {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(21, 101, 192, 0.13);
+  z-index: 1;
+  min-width: 110px;
+  display: flex;
+  flex-direction: column;
+  transition: background 0.3s, color 0.3s;
+}
+.dropdown button {
+  padding: 10px;
+  border: none;
+  background: none;
+  color: #333;
+  cursor: pointer;
+  font-size: 1em;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+.dropdown button:hover {
+  background: #f2f2f2;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .friends-list, main {
+    padding: 10px;
+    border-radius: 8px;
+  }
+  .friend-item {
+    padding: 10px;
+    font-size: 0.98em;
+  }
+  form {
+    padding: 8px;
+    max-width: 100vw;
+  }
+  .message {
+    padding: 8px;
+    font-size: 0.98em;
+  }
+}
+
+@media (max-width: 480px) {
+  .friends-list, main {
+    padding: 6px;
+    border-radius: 6px;
+  }
+  .friend-item {
+    padding: 7px;
+    font-size: 0.95em;
+  }
+  form {
+    padding: 5px;
+    max-width: 100vw;
+  }
+  .message {
+    padding: 5px;
+    font-size: 0.95em;
+  }
+}
