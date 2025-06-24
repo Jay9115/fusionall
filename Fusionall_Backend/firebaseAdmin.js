@@ -18,7 +18,8 @@ const serviceAccount = {
 try {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://fusionall360.firebaseio.com"
+    databaseURL: "https://fusionall360.firebaseio.com",
+    storageBucket: 'gs://fusionall360.appspot.com'
   });
   console.log('✅ Firebase Admin SDK initialized successfully');
 } catch (error) {

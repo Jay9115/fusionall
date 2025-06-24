@@ -10,11 +10,12 @@ function PrivateChat({ friend, setSelectedFriend }) {
     const [selectedMessages, setSelectedMessages] = useState([]);
     const chatId = [currentUser.uid, friend.uid].sort().join('_');
 
-    // Fetch messages from backend
+    // Fetch messages from backend with polling for real-time sync
     useEffect(() => {
+        let isMounted = true;
         const fetchMessages = async () => {
             const res = await fetch(`https://fusionall-bckend.onrender.com/api/chat/messages/${currentUser.uid}/${friend.uid}`);
-            if (res.ok) {
+            if (res.ok && isMounted) {
                 const data = await res.json();
                 setMessages(data);
                 setTimeout(() => {
@@ -23,7 +24,11 @@ function PrivateChat({ friend, setSelectedFriend }) {
             }
         };
         fetchMessages();
-        // Optionally, set up polling or websockets for real-time updates
+        const interval = setInterval(fetchMessages, 2000); // Poll every 2 seconds
+        return () => {
+            isMounted = false;
+            clearInterval(interval);
+        };
     }, [chatId]);
 
     const sendMessage = async (e) => {
