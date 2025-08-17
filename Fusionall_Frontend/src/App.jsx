@@ -47,19 +47,32 @@ function App() {
         ])
             .then(async (res) => {
                 if (!res.ok) throw new Error("Server responded with an error");
+                
+                // Clone the response to avoid the "body stream already read" error
+                const responseClone = res.clone();
+                
                 try {
                     const data = await res.json();
                     console.log("Backend health response:", data);
                     setHealthStatus("success");
-                    setHealthMsg(data.message || data || "Backend is connected successfully!");
+                    setHealthMsg(data.message || "Backend is connected successfully!");
                     // Reset retries after successful connection
                     setHealthCheckRetries(0);
                 } catch (error) {
-                    // If we can't parse the JSON but got a response, it's still successful
-                    console.log("Backend health response (text):", await res.text());
-                    setHealthStatus("success");
-                    setHealthMsg("Backend is connected successfully!");
-                    setHealthCheckRetries(0);
+                    // If we can't parse the JSON but got a response, try as text instead
+                    console.log("Failed to parse JSON, trying text:", error);
+                    try {
+                        const textData = await responseClone.text();
+                        console.log("Backend health response (text):", textData);
+                        setHealthStatus("success");
+                        setHealthMsg("Backend is connected successfully!");
+                        setHealthCheckRetries(0);
+                    } catch (textError) {
+                        console.error("Failed to read response as text:", textError);
+                        setHealthStatus("success"); // Still consider it a success if we got a response
+                        setHealthMsg("Backend is connected!");
+                        setHealthCheckRetries(0);
+                    }
                 }
             })
             .catch((err) => {
