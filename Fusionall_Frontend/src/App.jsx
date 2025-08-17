@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import HorizontalNav from "./components/Horizontalnav";
 import VerticalNav from "./components/VerticalNav";
@@ -10,15 +10,38 @@ import BlogEditor from "./components/Blogeditor";
 import Home from './components/Home';
 import Materials from "./components/Materials";
 import { auth } from "./components/firebase";
+import HealthPopup from "./components/HealthPopup";
 
 function App() {
     const [activeSection, setActiveSection] = useState("Home");
     const [blogs, setBlogs] = useState([]);
-    const [isWriting, setIsWriting] = useState(false); // Track if BlogEditor is open
+    const [isWriting, setIsWriting] = useState(false);
+
+    // Health popup state
+    const [showHealth, setShowHealth] = useState(true);
+    const [healthStatus, setHealthStatus] = useState("loading"); // loading | success | error
+    const [healthMsg, setHealthMsg] = useState("");
+
+    useEffect(() => {
+        if (!showHealth) return;
+        setHealthStatus("loading");
+        setHealthMsg("");
+        fetch("/health")
+            .then(async (res) => {
+                if (!res.ok) throw new Error("not ok");
+                const data = await res.json();
+                setHealthStatus("success");
+                setHealthMsg(data.message);
+            })
+            .catch(() => {
+                setHealthStatus("error");
+                setHealthMsg("");
+            });
+    }, [showHealth]);
 
     const handleNavClick = (section) => {
         setActiveSection(section);
-        setIsWriting(false); // Close editor when navigating away
+        setIsWriting(false);
     };
 
     const addBlog = async (newBlog) => {
@@ -34,7 +57,7 @@ function App() {
                 body: JSON.stringify({
                     ...newBlog,
                     authorId: currentUser.uid,
-                    authorName: currentUser.displayName // or fetch from backend if needed
+                    authorName: currentUser.displayName
                 }),
             });
             if (response.ok) {
@@ -46,11 +69,17 @@ function App() {
         } catch (error) {
             alert("Failed to save the blog. Please try again.");
         }
-    
     };
 
     return (
         <div className="App">
+            {showHealth && (
+                <HealthPopup
+                    status={healthStatus}
+                    message={healthMsg}
+                    onClose={() => setShowHealth(false)}
+                />
+            )}
             <HorizontalNav onNavClick={handleNavClick} />
             <VerticalNav onNavClick={handleNavClick} />
 
