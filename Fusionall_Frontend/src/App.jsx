@@ -26,21 +26,17 @@ function App() {
         if (!showHealth) return;
         setHealthStatus("loading");
         setHealthMsg("");
-        // Use deployed backend in production, local in dev
-        const backendHealthUrl =
-            process.env.NODE_ENV === "production"
-                ? "https://fusionall-bckend.onrender.com/api/health"
-                : "/health";
+        const backendHealthUrl = "https://fusionall-bckend.onrender.com/api/health";
         fetch(backendHealthUrl)
             .then(async (res) => {
                 if (!res.ok) throw new Error("not ok");
                 const data = await res.json();
                 setHealthStatus("success");
-                setHealthMsg(data.message || data);
+                setHealthMsg(data.message || JSON.stringify(data));
             })
-            .catch(() => {
+            .catch((err) => {
                 setHealthStatus("error");
-                setHealthMsg("");
+                setHealthMsg(err?.message || "");
             });
     }, [showHealth]);
 
