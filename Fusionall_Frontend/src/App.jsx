@@ -21,24 +21,68 @@ function App() {
     const [showHealth, setShowHealth] = useState(true);
     const [healthStatus, setHealthStatus] = useState("loading"); // loading | success | error
     const [healthMsg, setHealthMsg] = useState("");
-
-    useEffect(() => {
-        if (!showHealth) return;
+    const [healthCheckRetries, setHealthCheckRetries] = useState(0);
+    
+    const checkBackendHealth = () => {
         setHealthStatus("loading");
         setHealthMsg("");
         const backendHealthUrl = "https://fusionall-bckend.onrender.com/api/health";
-        fetch(backendHealthUrl)
+        
+        // Create a timeout promise
+        const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error("Connection timed out")), 10000);
+        });
+        
+        // Race the fetch against the timeout
+        Promise.race([
+            fetch(backendHealthUrl, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                cache: 'no-cache',
+            }),
+            timeoutPromise
+        ])
             .then(async (res) => {
-                if (!res.ok) throw new Error("not ok");
-                const data = await res.json();
-                setHealthStatus("success");
-                setHealthMsg(data.message || JSON.stringify(data));
+                if (!res.ok) throw new Error("Server responded with an error");
+                try {
+                    const data = await res.json();
+                    console.log("Backend health response:", data);
+                    setHealthStatus("success");
+                    setHealthMsg(data.message || data || "Backend is connected successfully!");
+                    // Reset retries after successful connection
+                    setHealthCheckRetries(0);
+                } catch (error) {
+                    // If we can't parse the JSON but got a response, it's still successful
+                    console.log("Backend health response (text):", await res.text());
+                    setHealthStatus("success");
+                    setHealthMsg("Backend is connected successfully!");
+                    setHealthCheckRetries(0);
+                }
             })
             .catch((err) => {
+                console.error("Backend health check error:", err);
                 setHealthStatus("error");
-                setHealthMsg(err?.message || "");
+                if (healthCheckRetries < 2) {
+                    // Retry up to 2 times with increasing timeout
+                    setHealthMsg(`Connection failed. Retrying (${healthCheckRetries + 1}/3)...`);
+                    setTimeout(() => {
+                        setHealthCheckRetries(prev => prev + 1);
+                    }, 2000);
+                } else {
+                    setHealthMsg("Could not connect to backend. Please try again later.");
+                }
             });
-    }, [showHealth]);
+    };
+
+    useEffect(() => {
+        if (!showHealth) return;
+        
+        checkBackendHealth();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [showHealth, healthCheckRetries]);
 
     const handleNavClick = (section) => {
         setActiveSection(section);
@@ -79,6 +123,10 @@ function App() {
                     status={healthStatus}
                     message={healthMsg}
                     onClose={() => setShowHealth(false)}
+                    onRetry={() => {
+                        setHealthCheckRetries(0);
+                        checkBackendHealth();
+                    }}
                 />
             )}
             <HorizontalNav onNavClick={handleNavClick} />
