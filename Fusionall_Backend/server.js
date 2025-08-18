@@ -35,7 +35,7 @@ app.use('/api/materials', require('./routes/materials'));
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ message: 'Backend working !' });
+  res.json({ message: 'Backend working' });
 });
 app.get('/api/health', (req, res) => res.send('Backend is running!'));
 

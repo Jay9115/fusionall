@@ -21,73 +21,63 @@ function App() {
     const [showHealth, setShowHealth] = useState(true);
     const [healthStatus, setHealthStatus] = useState("loading"); // loading | success | error
     const [healthMsg, setHealthMsg] = useState("");
-    const [healthCheckRetries, setHealthCheckRetries] = useState(0);
     
     const checkBackendHealth = () => {
         setHealthStatus("loading");
-        setHealthMsg("");
+        setHealthMsg("Checking backend connection...");
         const backendHealthUrl = "https://fusionall-bckend.onrender.com/api/health";
         
-        // Create a timeout promise
-        const timeoutPromise = new Promise((_, reject) => {
-            setTimeout(() => reject(new Error("Connection timed out")), 10000);
-        });
+        // Set a timeout for 60 seconds (1 minute)
+        const timeoutId = setTimeout(() => {
+            setHealthStatus("error");
+            setHealthMsg("Connection timed out after 1 minute. Backend might be unavailable.");
+        }, 60000);
         
-        // Race the fetch against the timeout
-        Promise.race([
-            fetch(backendHealthUrl, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                cache: 'no-cache',
-            }),
-            timeoutPromise
-        ])
-            .then(async (res) => {
-                if (!res.ok) throw new Error("Server responded with an error");
-                
-                // Clone the response to avoid the "body stream already read" error
-                const responseClone = res.clone();
-                
+        fetch(backendHealthUrl, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            cache: 'no-cache',
+        })
+        .then(async (res) => {
+            // Clear the timeout since we got a response
+            clearTimeout(timeoutId);
+            
+            if (!res.ok) throw new Error("Server responded with an error");
+            
+            // Clone the response to avoid the "body stream already read" error
+            const responseClone = res.clone();
+            
+            try {
+                const data = await res.json();
+                console.log("Backend health response:", data);
+                setHealthStatus("success");
+                setHealthMsg(data.message || "Backend is connected successfully!");
+            } catch (error) {
+                // If we can't parse the JSON but got a response, try as text instead
+                console.log("Failed to parse JSON, trying text:", error);
                 try {
-                    const data = await res.json();
-                    console.log("Backend health response:", data);
+                    const textData = await responseClone.text();
+                    console.log("Backend health response (text):", textData);
                     setHealthStatus("success");
-                    setHealthMsg(data.message || "Backend is connected successfully!");
-                    // Reset retries after successful connection
-                    setHealthCheckRetries(0);
-                } catch (error) {
-                    // If we can't parse the JSON but got a response, try as text instead
-                    console.log("Failed to parse JSON, trying text:", error);
-                    try {
-                        const textData = await responseClone.text();
-                        console.log("Backend health response (text):", textData);
-                        setHealthStatus("success");
-                        setHealthMsg("Backend is connected successfully!");
-                        setHealthCheckRetries(0);
-                    } catch (textError) {
-                        console.error("Failed to read response as text:", textError);
-                        setHealthStatus("success"); // Still consider it a success if we got a response
-                        setHealthMsg("Backend is connected!");
-                        setHealthCheckRetries(0);
-                    }
+                    setHealthMsg("Backend is connected successfully!");
+                } catch (textError) {
+                    console.error("Failed to read response as text:", textError);
+                    setHealthStatus("success"); // Still consider it a success if we got a response
+                    setHealthMsg("Backend is connected!");
                 }
-            })
-            .catch((err) => {
-                console.error("Backend health check error:", err);
-                setHealthStatus("error");
-                if (healthCheckRetries < 2) {
-                    // Retry up to 2 times with increasing timeout
-                    setHealthMsg(`Connection failed. Retrying (${healthCheckRetries + 1}/3)...`);
-                    setTimeout(() => {
-                        setHealthCheckRetries(prev => prev + 1);
-                    }, 2000);
-                } else {
-                    setHealthMsg("Could not connect to backend. Please try again later.");
-                }
-            });
+            }
+        })
+        .catch((err) => {
+            // Clear the timeout since we already know the result
+            clearTimeout(timeoutId);
+            
+            console.error("Backend health check error:", err);
+            setHealthStatus("error");
+            setHealthMsg("Could not connect to backend. Please try again later.");
+        });
     };
 
     useEffect(() => {
@@ -95,7 +85,7 @@ function App() {
         
         checkBackendHealth();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [showHealth, healthCheckRetries]);
+    }, [showHealth]);
 
     const handleNavClick = (section) => {
         setActiveSection(section);
@@ -136,10 +126,6 @@ function App() {
                     status={healthStatus}
                     message={healthMsg}
                     onClose={() => setShowHealth(false)}
-                    onRetry={() => {
-                        setHealthCheckRetries(0);
-                        checkBackendHealth();
-                    }}
                 />
             )}
             <HorizontalNav onNavClick={handleNavClick} />

@@ -1,10 +1,10 @@
 import React from "react";
 import "./HealthPopup.css";
 
-export default function HealthPopup({ status, message, onClose, onRetry }) {
+export default function HealthPopup({ status, message, onClose }) {
   // Messages based on status
   let displayMsg = "";
-  if (status === "loading") displayMsg = "Checking backend health...";
+  if (status === "loading") displayMsg = message || "Checking backend health...";
   else if (status === "error") displayMsg = message || "Could not connect to backend.";
   else if (status === "success") displayMsg = message || "Backend is running correctly!";
 
@@ -38,19 +38,7 @@ export default function HealthPopup({ status, message, onClose, onRetry }) {
         <h2 className="health-popup-title">Backend Health Check</h2>
         {renderStatusIcon()}
         <div className="health-popup-message">{displayMsg}</div>
-        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-          {status === "error" && onRetry && (
-            <button 
-              className="health-popup-continue"
-              onClick={(e) => {
-                e.preventDefault();
-                if (onRetry) onRetry();
-              }}
-              style={{ background: '#6b7280' }}
-            >
-              Retry Connection
-            </button>
-          )}
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
           <button 
             className="health-popup-continue" 
             onClick={(e) => {
